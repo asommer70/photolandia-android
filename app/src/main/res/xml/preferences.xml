@@ -5,5 +5,10 @@
         android:summary="URL for Photolandia server."
         android:key="url"
         android:inputType="text"/>
+    <EditTextPreference
+        android:title="Album ID"
+        android:summary="Default Album for uploading photos."
+        android:key="default_album_id"
+        android:inputType="number"/>
 
 </PreferenceScreen>

@@ -10,12 +10,8 @@ import android.util.Log
 import android.widget.GridView
 import com.thehoick.photolandia.R.*
 import android.content.Intent
-import android.support.v7.app.ActionBar
 import android.view.Menu
 import android.view.MenuItem
-import android.view.MenuInflater
-
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -38,6 +34,8 @@ class MainActivity : AppCompatActivity() {
         val prefs = this.getSharedPreferences(this.getPackageName() + "_preferences", 0)
         val url = prefs.getString("url", "")
         Log.d(TAG, "prefs.url: $url")
+        val defaultAlbumId = prefs.getString("default_album_id", "")
+        Log.d(TAG, "prefs.default_album_id: $defaultAlbumId")
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -61,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
-            // User chose the "Settings" item, show the app settings UI...
+            // Open the Settings fragment.
             fragmentManager.beginTransaction()
                     .addToBackStack("Settings")
                     .replace(android.R.id.content, Settings())
@@ -70,8 +68,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         else -> {
-            // If we got here, the user's action was not recognized.
-            // Invoke the superclass to handle it.
             super.onOptionsItemSelected(item)
         }
     }
