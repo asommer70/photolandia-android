@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:title="Server URL"
+        android:summary="URL for Photolandia server."
+        android:key="url"
+        android:inputType="text"/>
+
+</PreferenceScreen>

@@ -10,6 +10,11 @@ import android.util.Log
 import android.widget.GridView
 import com.thehoick.photolandia.R.*
 import android.content.Intent
+import android.support.v7.app.ActionBar
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MenuInflater
+
 
 
 
@@ -29,6 +34,10 @@ class MainActivity : AppCompatActivity() {
             val photos = findViewById(R.id.photos) as GridView
             photos.adapter = PhotoAdapter(this);
         }
+
+        val prefs = this.getSharedPreferences(this.getPackageName() + "_preferences", 0)
+        val url = prefs.getString("url", "")
+        Log.d(TAG, "prefs.url: $url")
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -48,5 +57,30 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_settings -> {
+            // User chose the "Settings" item, show the app settings UI...
+            fragmentManager.beginTransaction()
+                    .addToBackStack("Settings")
+                    .replace(android.R.id.content, Settings())
+                    .commit()
+            true
+        }
+
+        else -> {
+            // If we got here, the user's action was not recognized.
+            // Invoke the superclass to handle it.
+            super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        val inflater = menuInflater
+        inflater.inflate(R.menu.main, menu)
+
+        return super.onCreateOptionsMenu(menu)
     }
 }

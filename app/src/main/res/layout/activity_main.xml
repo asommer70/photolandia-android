@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.thehoick.photolandia.MainActivity"
-    android:padding="4dp">
-
+    tools:context="com.thehoick.photolandia.MainActivity">
 
     <GridView
         android:id="@+id/photos"
@@ -17,5 +15,6 @@
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:padding="4dp"/>
 </LinearLayout>
