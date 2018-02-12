@@ -9,6 +9,10 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import android.support.v4.content.ContextCompat.startActivity
+import android.content.Intent
+
+
 
 
 class PhotoAdapter(private val context: Activity) : BaseAdapter() {
@@ -34,6 +38,13 @@ class PhotoAdapter(private val context: Activity) : BaseAdapter() {
         val picturesView: ImageView
         picturesView = ImageView(context)
         picturesView.setScaleType(ImageView.ScaleType.FIT_CENTER)
+
+        picturesView.setOnClickListener {
+            val photo = images!![position]
+            val intent = Intent(context, PhotoView::class.java)
+            intent.putExtra(PhotoView.PHOTO, photo)
+            startActivity(context, intent, null)
+        }
 
         Glide.with(context).load(images!!.get(position)).into(picturesView)
 
