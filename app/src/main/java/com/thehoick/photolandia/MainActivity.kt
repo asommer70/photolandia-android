@@ -66,6 +66,12 @@ class MainActivity : AppCompatActivity() {
                     .commit()
             true
         }
+        R.id.login -> {
+            // Open the LoginActivity.
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            true
+        }
 
         else -> {
             super.onOptionsItemSelected(item)
