@@ -22,8 +22,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(layout.activity_main)
 
         val permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-//        val permissionCheck = ContextCompat.checkSelfPermission(thisActivity,
-//                Manifest.permission.WRITE_CALENDAR)
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 101)

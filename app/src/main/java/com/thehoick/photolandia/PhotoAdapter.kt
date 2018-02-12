@@ -32,16 +32,8 @@ class PhotoAdapter(private val context: Activity) : BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val picturesView: ImageView
-//        if (convertView == null) {
         picturesView = ImageView(context)
         picturesView.setScaleType(ImageView.ScaleType.FIT_CENTER)
-//            picturesView.setLayoutParams(GridView.LayoutParams(270, 270))
-//            picturesView.setLayoutParams(GridView.)
-//
-//        }
-//        else {
-//            picturesView = convertView as ImageView?
-//        }
 
         Glide.with(context).load(images!!.get(position)).into(picturesView)
 
