@@ -3,21 +3,15 @@ package com.thehoick.photolandia
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.android.volley.Request
-import com.android.volley.toolbox.Volley
-import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
-import com.beust.klaxon.Klaxon
-import com.thehoick.photolandia.models.User
 import org.json.JSONObject
 
 
@@ -44,9 +38,6 @@ class LoginActivity : AppCompatActivity() {
         statusText = findViewById(R.id.statusText)
 
         loginButton!!.setOnClickListener {
-            // TODO:as save the user's token to SharedPrefs.
-            // TODO:as save user's username, email, etc from the server.
-
             val url = prefs!!.getString("url", "") + "/api/login"
             val username = usernameInput!!.text.toString()
             val password = passwordInput!!.text.toString()
@@ -69,6 +60,7 @@ class LoginActivity : AppCompatActivity() {
                             editor.putInt(USER_ID, response.get("id")as Int)
                             editor.apply()
                             Toast.makeText(this@LoginActivity, response.get("message").toString(), Toast.LENGTH_LONG).show()
+                            setResult(RESULT_OK, intent);
                             finish()
                         }
                     }

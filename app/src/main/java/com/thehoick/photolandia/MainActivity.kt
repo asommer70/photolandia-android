@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.GridView
 import com.thehoick.photolandia.R.*
 import android.content.Intent
+import android.content.SharedPreferences
 import android.view.Menu
 import android.view.MenuItem
 
@@ -17,6 +18,12 @@ import android.view.MenuItem
 class MainActivity : AppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
     private val READ_EXTERNAL_REQUEST_CODE = 101
+    private var prefs: SharedPreferences? = null
+    var token: String? = null
+    var username: String? = null
+    private val USER_ID = "user_id"
+    private val USERNAME = "username"
+    private val TOKEN = "token"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +38,10 @@ class MainActivity : AppCompatActivity() {
             photos.adapter = PhotoAdapter(this);
         }
 
-        val prefs = this.getSharedPreferences(this.getPackageName() + "_preferences", 0)
-        val url = prefs.getString("url", "")
+        prefs = this.getSharedPreferences(this.getPackageName() + "_preferences", 0)
+        val url = prefs!!.getString("url", "")
         Log.d(TAG, "prefs.url: $url")
-        val defaultAlbumId = prefs.getString("default_album_id", "")
+        val defaultAlbumId = prefs!!.getString("default_album_id", "")
         Log.d(TAG, "prefs.default_album_id: $defaultAlbumId")
     }
 
@@ -58,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.action_settings -> {
+        R.id.settings -> {
             // Open the Settings fragment.
             fragmentManager.beginTransaction()
                     .addToBackStack("Settings")
@@ -69,7 +76,18 @@ class MainActivity : AppCompatActivity() {
         R.id.login -> {
             // Open the LoginActivity.
             val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, 100)
+            true
+        }
+
+        R.id.logout -> {
+            // Clear token, user_id, and username from SharedPrefs, and finish the Activity.
+            val editor = prefs!!.edit()
+            editor.putString(USERNAME, null)
+            editor.putString(TOKEN, null)
+            editor.putInt(USER_ID, 0)
+            editor.apply()
+            finish()
             true
         }
 
@@ -78,11 +96,35 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         val inflater = menuInflater
         inflater.inflate(R.menu.main, menu)
 
+        token = prefs!!.getString(TOKEN, "")
+        username = prefs!!.getString(USERNAME, "")
+
+        // Add welcome message to the menu and logout item if token and username SharedPrefs are set.
+        if (!token.equals("") && !username.equals("")) {
+            menu.clear()
+            menu.add(0, R.id.username, Menu.NONE, "Welcome, " + username)
+            menu.add(0, R.id.logout, Menu.NONE, "Logout")
+            menu.add(0, R.id.settings, Menu.NONE, "Settings")
+        } else {
+            menu.removeItem(R.id.username)
+            menu.removeItem(R.id.logout)
+        }
+
         return super.onCreateOptionsMenu(menu)
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        Log.d(TAG, "onActivitResult requstCode: $requestCode")
+//        if (requestCode == 100) {
+//            invalidateOptionsMenu()
+//        }
+        invalidateOptionsMenu()
     }
 }
