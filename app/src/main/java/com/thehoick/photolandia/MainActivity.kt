@@ -11,6 +11,7 @@ import android.widget.GridView
 import com.thehoick.photolandia.R.*
 import android.content.Intent
 import android.content.SharedPreferences
+import android.support.design.widget.BottomNavigationView
 import android.view.Menu
 import android.view.MenuItem
 
@@ -121,10 +122,28 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        Log.d(TAG, "onActivitResult requstCode: $requestCode")
-//        if (requestCode == 100) {
-//            invalidateOptionsMenu()
-//        }
         invalidateOptionsMenu()
+    }
+
+    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        when (item.itemId) {
+            R.id.local_photos -> {
+//                message.setText(R.string.title_home)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.local_albums -> {
+//                message.setText(R.string.title_dashboard)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.albums -> {
+//                message.setText(R.string.title_notifications)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.photos -> {
+//                message.setText(R.string.title_notifications)
+                return@OnNavigationItemSelectedListener true
+            }
+        }
+        false
     }
 }
