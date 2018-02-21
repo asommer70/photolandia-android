@@ -8,6 +8,16 @@
     android:layout_height="match_parent"
     tools:context="com.thehoick.photolandia.MainActivity">
 
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="200dp"
+        android:layout_height="117dp"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="196dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/photos"
+        app:layout_constraintTop_toTopOf="@+id/photos" />
+
     <GridView
         android:id="@+id/photos"
         android:layout_width="match_parent"

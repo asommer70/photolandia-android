@@ -1,89 +1,60 @@
-//package com.thehoick.photolandia
-//
-//import android.content.Context
-//import android.content.SharedPreferences
-//import android.support.v7.app.AppCompatActivity
-//import android.support.v7.widget.RecyclerView
-//import android.util.Log
-//import android.view.LayoutInflater
-//import android.view.View
-//import android.view.ViewGroup
-//import android.widget.ImageView
-//import android.widget.TextView
-//import android.widget.Toast
-//import org.json.JSONArray
-//import org.json.JSONObject
-//import org.json.JSONException
-//
-//
-//
-//
-//class AlbumAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-//    val TAG = AlbumAdapter::class.java.simpleName
-//    var prefs: SharedPreferences? = null
-//    var albums: ArrayList<JSONObject>? = null
-//    var context: Context? = null
-//
-//    init {
-//        prefs = context!!.getSharedPreferences(context!!.getPackageName() + "_preferences", 0)
-//        val url = prefs!!.getString("url", "") + "/api/albums"
-//
-//        // TODO:as get Albums from the server.
-//        val queue = PhotoLandiaApi.getInstance(context!!).requestQueue
-//        val request = JsonArrayRequest(url,
-//        Response.Listener { jsonArray ->
-////            albums = jsonArray
-//            for (i in 0 until jsonArray.length()) {
-////                try {
-//                val jsonObject = jsonArray.getJSONObject(i)
-//                albums!!.add(jsonObject)
-////                } catch (e: JSONException) {
-////                    albums.add("Error: " + e.localizedMessage)
-////                }
-//
-//            }
-//
-//        },
-//        Response.ErrorListener { volleyError -> Toast.makeText(context, "Unable to fetch data: " + volleyError.message, Toast.LENGTH_SHORT).show() })
-//
-//        albums = ArrayList()
-//        PhotoLandiaApi.getInstance(context!!).addToRequestQueue(request)
-//    }
-//
-//    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
-//        context = parent!!.getContext()
-//        val view = LayoutInflater.from(parent!!.getContext()).inflate(R.layout.album_item, parent, false)
-//        return ViewHolder(view)
-//    }
-//
-//    override fun getItemCount(): Int {
-//        return albums!!.size
-//    }
-//
-//    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
-//        (holder as ViewHolder).bindView(position)
-//    }
-//
-//    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-//        var name: TextView? = null
-//        var albumImage: ImageView? = null
-//        var createdAt: TextView? = null
-//
-//        fun ViewHolder(v: View) {
-//            name = itemView.findViewById(R.id.name)
-//            albumImage = itemView.findViewById(R.id.albumImage)
-//            createdAt = itemView.findViewById(R.id.createdAt)
-//            itemView.setOnClickListener(this)
-//        }
-//
-//        fun bindView(position: Int) {
-//            name!!.setText(albums!![position].get("name").toString())
-////            albumImage!!.setImageResource(albums!![position].get("photos")[0])
-//            createdAt!!.setText(albums!![position].get("created_at").toString())
-//        }
-//
-//        override fun onClick(v: View) {
-//
-//        }
-//    }
-//}
+package com.thehoick.photolandia
+
+import android.app.Activity
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.ImageView
+import android.widget.TextView
+import com.bumptech.glide.Glide
+import java.text.SimpleDateFormat
+
+class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter() {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        var row = convertView
+        var holder = ViewHolder()
+
+        if (row == null) {
+            val inflater = context.layoutInflater
+            row = inflater!!.inflate(R.layout.album_item, parent, false)
+            holder.albumImage = row.findViewById(R.id.albumImage) as ImageView
+            holder.albumName = row.findViewById(R.id.albumName) as TextView
+            holder.albumCreatedAt = row.findViewById(R.id.albumCreatedAt) as TextView
+            row.setTag(holder)
+
+        } else {
+            holder = row.getTag() as ViewHolder
+        }
+
+        val album = albums[position]
+
+        Glide.with(context).load(album.photo_set[0].image).into(holder.albumImage!!)
+        holder.albumName!!.setText(album.name)
+        val df = SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
+        holder.albumCreatedAt!!.setText(df.format(album.created_at))
+
+        return row!!
+    }
+
+    override fun getItem(position: Int): Any {
+        return position
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getCount(): Int {
+        return albums.size
+    }
+
+    private inner class ViewHolder: View.OnContextClickListener {
+        var albumImage: ImageView? = null
+        var albumName: TextView? = null
+        var albumCreatedAt: TextView? = null
+
+        override fun onContextClick(v: View?): Boolean {
+            return true
+        }
+    }
+}

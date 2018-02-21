@@ -15,6 +15,7 @@ import android.content.SharedPreferences
 import android.support.design.widget.BottomNavigationView
 import android.view.Menu
 import android.view.MenuItem
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,15 +37,8 @@ class MainActivity : AppCompatActivity() {
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 101)
         } else {
-            // TODO:as change this to a LocalPhotosFragment class.
-            val localPhotosFragment = LocalPhotosFragment()
-            val fragmentManager = getFragmentManager()
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.add(R.id.container, localPhotosFragment)
-            fragmentTransaction.commit()
-
-//            val photos = findViewById(R.id.photos) as GridView
-//            photos.adapter = PhotoAdapter(this);
+            localPhotosFragment()
+            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         }
 
         prefs = this.getSharedPreferences(this.getPackageName() + "_preferences", 0)
@@ -129,23 +123,35 @@ class MainActivity : AppCompatActivity() {
         invalidateOptionsMenu()
     }
 
+    fun localPhotosFragment() {
+        val localPhotosFragment = LocalPhotosFragment()
+        val fragmentManager = getFragmentManager()
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.container, localPhotosFragment)
+        fragmentTransaction.commit()
+    }
+
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.local_photos -> {
-//                message.setText(R.string.title_home)
+                localPhotosFragment()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.albums -> {
-//                message.setText(R.string.title_notifications)
-                val localPhotosFragment = AlbumsFragment()
-                val fragmentManager = getFragmentManager()
-                val fragmentTransaction = fragmentManager.beginTransaction()
-                fragmentTransaction.add(R.id.container, localPhotosFragment)
-                fragmentTransaction.commit()
+                Log.d(TAG, "Albums clicked...")
+                val albumsFragment = AlbumsFragment()
+//                val fragmentManager = getFragmentManager()
+//                val fragmentTransaction = fragmentManager.beginTransaction()
+//                fragmentTransaction.add(R.id.container, albumsFragment)
+//                fragmentTransaction.commit()
+
+                fragmentManager.beginTransaction()
+                        .addToBackStack("Albums")
+                        .replace(android.R.id.content, albumsFragment)
+                        .commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.photos -> {
-//                message.setText(R.string.title_notifications)
                 return@OnNavigationItemSelectedListener true
             }
         }
