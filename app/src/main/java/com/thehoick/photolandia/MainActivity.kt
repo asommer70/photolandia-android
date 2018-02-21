@@ -1,6 +1,7 @@
 package com.thehoick.photolandia
 
 import android.Manifest
+import android.app.FragmentManager
 import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -35,15 +36,18 @@ class MainActivity : AppCompatActivity() {
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 101)
         } else {
-            val photos = findViewById(R.id.photos) as GridView
-            photos.adapter = PhotoAdapter(this);
+            // TODO:as change this to a LocalPhotosFragment class.
+            val localPhotosFragment = LocalPhotosFragment()
+            val fragmentManager = getFragmentManager()
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.add(R.id.container, localPhotosFragment)
+            fragmentTransaction.commit()
+
+//            val photos = findViewById(R.id.photos) as GridView
+//            photos.adapter = PhotoAdapter(this);
         }
 
         prefs = this.getSharedPreferences(this.getPackageName() + "_preferences", 0)
-        val url = prefs!!.getString("url", "")
-        Log.d(TAG, "prefs.url: $url")
-        val defaultAlbumId = prefs!!.getString("default_album_id", "")
-        Log.d(TAG, "prefs.default_album_id: $defaultAlbumId")
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -131,12 +135,13 @@ class MainActivity : AppCompatActivity() {
 //                message.setText(R.string.title_home)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.local_albums -> {
-//                message.setText(R.string.title_dashboard)
-                return@OnNavigationItemSelectedListener true
-            }
             R.id.albums -> {
 //                message.setText(R.string.title_notifications)
+                val localPhotosFragment = AlbumsFragment()
+                val fragmentManager = getFragmentManager()
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentTransaction.add(R.id.container, localPhotosFragment)
+                fragmentTransaction.commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.photos -> {

@@ -1,41 +1,83 @@
 package com.thehoick.photolandia
 
 import android.content.Context
-import com.android.volley.toolbox.Volley
-import com.android.volley.RequestQueue
-import com.android.volley.Request
+import android.content.SharedPreferences
+import com.google.gson.Gson
+import okhttp3.Interceptor
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import java.util.*
+import okhttp3.OkHttpClient
+import okhttp3.Response
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.POST
+import java.io.IOException
 
 
-class PhotoLandiaApi private constructor(context: Context) {
-    private var mRequestQueue: RequestQueue? = null
+val baseUrl = "http://gallium:3000"
 
-    val requestQueue: RequestQueue
-        get() {
-            if (mRequestQueue == null) {
-                mRequestQueue = Volley.newRequestQueue(mCtx!!.getApplicationContext())
-            }
-            return mRequestQueue!!
-        }
+interface PhotolandiaApi {
+    @GET("/albums/api")
+    fun getAlbums(): Call<AlbumResult>
+
+    @FormUrlEncoded
+    @POST("/api/login")
+    fun login(@Field("username") username: String, @Field("password") password: String): Call<User>
+}
+
+class Album(val id: Int, val name: String, val description: String, val created_at: Date, val updated_at: Date, val photo_set: Array<Photo>)
+
+class AlbumResult(val count: Float, val next: Int?, val previous: Int?, val results: Array<Album>)
+
+class Photo(val id: Int, val image: String, val caption: String, val createdAt: Date, val updatedAt: Date)
+
+class User(val id: Int, val username: String, val token: String, val message: String)
+
+class Api(val context: Context) {
+    val service: PhotolandiaApi
+    var token: String? = null
+    private val USER_ID = "user_id"
+    private val USERNAME = "username"
+    private val TOKEN = "token"
+
 
     init {
-        mCtx = context
-        mRequestQueue = requestQueue
-    }
+        val prefs = context.getSharedPreferences(context.getPackageName() + "_preferences", 0)
+        token = prefs?.getString(TOKEN, "")
 
-    fun <T> addToRequestQueue(req: Request<T>) {
-        requestQueue.add(req)
-    }
+        val httpClient = OkHttpClient.Builder()
 
-    companion object {
-        private var mInstance: PhotoLandiaApi? = null
-        private var mCtx: Context? = null
-
-        @Synchronized
-        fun getInstance(context: Context): PhotoLandiaApi {
-            if (mInstance == null) {
-                mInstance = PhotoLandiaApi(context)
+        httpClient.addInterceptor(object : Interceptor {
+            @Throws(IOException::class)
+            override fun intercept(chain: Interceptor.Chain): Response {
+                val request = chain.request()
+                        .newBuilder()
+                        .addHeader("Authorization", "Token $token")
+                        .build()
+                return chain.proceed(request)
             }
-            return mInstance!!
-        }
+        })
+
+        val retrofit = Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .client(httpClient.build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+        service = retrofit.create(PhotolandiaApi::class.java)
+    }
+
+    fun getAlbums(callback: Callback<AlbumResult>) {
+        val call = service.getAlbums()
+        call.enqueue(callback)
+    }
+
+    fun login(username: String, password: String, callback: Callback<User>) {
+        val call = service.login(username, password)
+        call.enqueue(callback)
     }
 }

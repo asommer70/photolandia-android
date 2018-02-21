@@ -6,11 +6,6 @@
         android:icon="@drawable/ic_local_photo_icon"
         android:title="Local Photos" />
     <item
-        android:id="@+id/local_albums"
-        android:enabled="true"
-        android:icon="@drawable/ic_local_album_icon"
-        android:title="Local Albums" />
-    <item
         android:id="@+id/albums"
         android:enabled="true"
         android:icon="@drawable/ic_album_icon"
