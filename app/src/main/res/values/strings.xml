@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Photolandia</string>
     <string name="albumsError">There was a problem getting Albums from the server...</string>
+    <string name="fetching_albums">Fetching Albums...</string>
 </resources>

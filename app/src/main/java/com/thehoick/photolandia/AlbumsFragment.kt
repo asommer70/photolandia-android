@@ -1,6 +1,7 @@
 package com.thehoick.photolandia
 
 import android.app.Fragment
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,13 +18,21 @@ class AlbumsFragment: Fragment() {
 
     fun getAlbums(view: View) {
         val api = Api(view.context)
+        val message = view.findViewById<TextView>(R.id.message)
+        val photoGrid = view.findViewById<GridView>(R.id.photos)
+        photoGrid.visibility = View.INVISIBLE
+
+        // TODO:as replace this fetching message with a spinner.  Or at least add a spinner below the text.
+        message.setText(getString(R.string.fetching_albums))
+        message.visibility = View.VISIBLE
+        message.setTextColor(Color.BLACK)
+
         val callback = object: Callback<AlbumResult> {
             override fun onFailure(call: Call<AlbumResult>?, t: Throwable?) {
                 Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
-                val photoGrid = view.findViewById<GridView>(R.id.photos)
                 photoGrid.visibility = View.INVISIBLE
-                val message = view.findViewById<TextView>(R.id.message)
                 message.visibility = View.VISIBLE
+                message.setTextColor(Color.RED)
                 message.setText(getString(R.string.albumsError))
             }
 
@@ -31,6 +40,8 @@ class AlbumsFragment: Fragment() {
                 val albumsView = view.findViewById<GridView>(R.id.photos)
                 Log.d(TAG, "response?.body()?.results: ${response?.body()?.results}")
 
+                photoGrid.visibility = View.VISIBLE
+                message.visibility = View.INVISIBLE
                 val albumAdapter = AlbumAdapter(activity, response?.body()?.results!!)
                 albumsView.setAdapter(albumAdapter)
             }
