@@ -37,7 +37,13 @@ class MainActivity : AppCompatActivity() {
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 101)
         } else {
-            localPhotosFragment()
+            val savedFragment = fragmentManager.findFragmentById(R.id.container)
+            if (savedFragment == null) {
+                localPhotosFragment()
+            } else {
+
+            }
+
             navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         }
 
@@ -140,15 +146,12 @@ class MainActivity : AppCompatActivity() {
             R.id.albums -> {
                 Log.d(TAG, "Albums clicked...")
                 val albumsFragment = AlbumsFragment()
-//                val fragmentManager = getFragmentManager()
-//                val fragmentTransaction = fragmentManager.beginTransaction()
-//                fragmentTransaction.add(R.id.container, albumsFragment)
-//                fragmentTransaction.commit()
+                val fragmentManager = getFragmentManager()
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentTransaction.replace(R.id.container, albumsFragment)
+                fragmentTransaction.addToBackStack(null)
+                fragmentTransaction.commit()
 
-                fragmentManager.beginTransaction()
-                        .addToBackStack("Albums")
-                        .replace(android.R.id.content, albumsFragment)
-                        .commit()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.photos -> {

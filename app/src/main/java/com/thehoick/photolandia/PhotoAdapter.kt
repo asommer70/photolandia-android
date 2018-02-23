@@ -11,6 +11,9 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import android.support.v4.content.ContextCompat.startActivity
 import android.content.Intent
+import android.os.Bundle
+
+
 
 
 
@@ -41,9 +44,18 @@ class PhotoAdapter(private val context: Activity) : BaseAdapter() {
 
         picturesView.setOnClickListener {
             val photo = images!![position]
-            val intent = Intent(context, PhotoView::class.java)
-            intent.putExtra(PhotoView.PHOTO, photo)
-            startActivity(context, intent, null)
+//            val intent = Intent(context, PhotoView::class.java)
+//            intent.putExtra(PhotoView.PHOTO, photo)
+//            startActivity(context, intent, null)
+
+            val photoFragment = PhotoFragment()
+            val data = Bundle()//create bundle instance
+            data.putString("photo", photo)
+            photoFragment.setArguments(data)
+            val fragmentTransaction = this.context.fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.container, photoFragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
         }
 
         Glide.with(context).load(images!!.get(position)).into(picturesView)

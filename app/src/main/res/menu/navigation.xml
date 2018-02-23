@@ -11,7 +11,7 @@
         android:icon="@drawable/ic_album_icon"
         android:title="Albums" />
     <item
-        android:id="@+id/photos"
+        android:id="@+id/serverPhotos"
         android:enabled="true"
         android:icon="@drawable/ic_photo_icon"
         android:title="Photos" />
