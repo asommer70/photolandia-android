@@ -9,13 +9,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import android.support.v4.content.ContextCompat.startActivity
-import android.content.Intent
 import android.os.Bundle
-
-
-
-
 
 
 class PhotoAdapter(private val context: Activity) : BaseAdapter() {

@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
         val localPhotosFragment = LocalPhotosFragment()
         val fragmentManager = getFragmentManager()
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.container, localPhotosFragment)
+        fragmentTransaction.replace(R.id.container, localPhotosFragment)
         fragmentTransaction.commit()
     }
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -18,17 +17,28 @@
         app:layout_constraintStart_toStartOf="@+id/photos"
         app:layout_constraintTop_toTopOf="@+id/photos" />
 
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/photos"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/photos"
+        app:layout_constraintTop_toBottomOf="@+id/message" />
+
     <GridView
         android:id="@+id/photos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit"
         android:columnWidth="120dp"
-        android:verticalSpacing="5dp"
-        android:horizontalSpacing="5dp"
-        android:stretchMode="columnWidth"
         android:gravity="center"
-        android:padding="4dp"/>
+        android:horizontalSpacing="5dp"
+        android:numColumns="auto_fit"
+        android:padding="4dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="5dp" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"

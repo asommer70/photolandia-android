@@ -12,6 +12,9 @@ import android.widget.TextView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.app.ProgressDialog
+import android.widget.ProgressBar
+
 
 class AlbumsFragment: Fragment() {
     val TAG = AlbumsFragment::class.java.simpleName
@@ -19,6 +22,7 @@ class AlbumsFragment: Fragment() {
     fun getAlbums(view: View) {
         val api = Api(view.context)
         val message = view.findViewById<TextView>(R.id.message)
+        val progress = view.findViewById<ProgressBar>(R.id.progress)
         val photoGrid = view.findViewById<GridView>(R.id.photos)
         photoGrid.visibility = View.INVISIBLE
 
@@ -26,6 +30,8 @@ class AlbumsFragment: Fragment() {
         message.setText(getString(R.string.fetching_albums))
         message.visibility = View.VISIBLE
         message.setTextColor(Color.BLACK)
+        progress.visibility = View.VISIBLE
+
 
         val callback = object: Callback<AlbumResult> {
             override fun onFailure(call: Call<AlbumResult>?, t: Throwable?) {
@@ -34,6 +40,7 @@ class AlbumsFragment: Fragment() {
                 message.visibility = View.VISIBLE
                 message.setTextColor(Color.RED)
                 message.setText(getString(R.string.albumsError))
+                progress.visibility = View.VISIBLE
             }
 
             override fun onResponse(call: Call<AlbumResult>?, response: Response<AlbumResult>?) {
@@ -42,6 +49,7 @@ class AlbumsFragment: Fragment() {
 
                 photoGrid.visibility = View.VISIBLE
                 message.visibility = View.INVISIBLE
+                progress.visibility = View.VISIBLE
                 val albumAdapter = AlbumAdapter(activity, response?.body()?.results!!)
                 albumsView.setAdapter(albumAdapter)
             }
