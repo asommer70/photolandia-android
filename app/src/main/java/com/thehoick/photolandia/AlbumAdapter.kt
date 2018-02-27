@@ -1,6 +1,8 @@
 package com.thehoick.photolandia
 
 import android.app.Activity
+import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -10,6 +12,8 @@ import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 
 class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter() {
+    val TAG = AlbumAdapter::class.java.simpleName
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var row = convertView
         var holder = ViewHolder()
@@ -21,6 +25,18 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
             holder.albumName = row.findViewById(R.id.albumName) as TextView
             holder.albumCreatedAt = row.findViewById(R.id.albumCreatedAt) as TextView
             row.setTag(holder)
+
+            // Open the AlbumFragment when the Album image is clicked.
+            holder.albumImage?.setOnClickListener() {
+                val albumFragment = AlbumFragment()
+                val data = Bundle()
+                data.putInt("album", albums[position].id)
+                albumFragment.setArguments(data)
+                val fragmentTransaction = this.context.fragmentManager.beginTransaction()
+                fragmentTransaction.replace(R.id.container, albumFragment)
+                fragmentTransaction.addToBackStack(null)
+                fragmentTransaction.commit()
+            }
 
         } else {
             holder = row.getTag() as ViewHolder
@@ -54,6 +70,7 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
         var albumCreatedAt: TextView? = null
 
         override fun onContextClick(v: View?): Boolean {
+            Log.d(TAG, "onContextClick v: $v")
             return true
         }
     }

@@ -8,13 +8,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
 import java.util.*
 import okhttp3.OkHttpClient
 import okhttp3.Response
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 import java.io.IOException
 
 
@@ -23,6 +20,9 @@ val baseUrl = "http://gallium:3000"
 interface PhotolandiaApi {
     @GET("/albums/api")
     fun getAlbums(): Call<AlbumResult>
+
+    @GET("/albums/api/{id}")
+    fun getAlbum(@Path("id") albumId: Int): Call<Album>
 
     @FormUrlEncoded
     @POST("/api/login")
@@ -73,6 +73,11 @@ class Api(val context: Context) {
 
     fun getAlbums(callback: Callback<AlbumResult>) {
         val call = service.getAlbums()
+        call.enqueue(callback)
+    }
+
+    fun getAlbum(id: Int, callback: Callback<Album>) {
+        val call = service.getAlbum(id)
         call.enqueue(callback)
     }
 

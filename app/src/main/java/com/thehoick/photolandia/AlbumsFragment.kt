@@ -26,7 +26,6 @@ class AlbumsFragment: Fragment() {
         val photoGrid = view.findViewById<GridView>(R.id.photos)
         photoGrid.visibility = View.INVISIBLE
 
-        // TODO:as replace this fetching message with a spinner.  Or at least add a spinner below the text.
         message.setText(getString(R.string.fetching_albums))
         message.visibility = View.VISIBLE
         message.setTextColor(Color.BLACK)
