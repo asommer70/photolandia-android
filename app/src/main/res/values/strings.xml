@@ -2,4 +2,6 @@
     <string name="app_name">Photolandia</string>
     <string name="albumsError">There was a problem getting Albums from the server...</string>
     <string name="fetching_albums">Fetching Albums...</string>
+    <string name="fetching_photos_error">A problem occured fetching the Photos...</string>
+    <string name="loading_photos">Loading photos...</string>
 </resources>

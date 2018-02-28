@@ -24,6 +24,9 @@ interface PhotolandiaApi {
     @GET("/albums/api/{id}")
     fun getAlbum(@Path("id") albumId: Int): Call<Album>
 
+    @GET("/photos/api")
+    fun getPhotos(): Call<PhotosResult>
+
     @FormUrlEncoded
     @POST("/api/login")
     fun login(@Field("username") username: String, @Field("password") password: String): Call<User>
@@ -34,6 +37,8 @@ class Album(val id: Int, val name: String, val description: String, val created_
 class AlbumResult(val count: Float, val next: Int?, val previous: Int?, val results: Array<Album>)
 
 class Photo(val id: Int, val image: String, val caption: String, val createdAt: Date, val updatedAt: Date)
+
+class PhotosResult(val count: Int, val next: String?, val previous: String?, val results: Array<Photo>)
 
 class User(val id: Int, val username: String, val token: String, val message: String)
 
@@ -78,6 +83,11 @@ class Api(val context: Context) {
 
     fun getAlbum(id: Int, callback: Callback<Album>) {
         val call = service.getAlbum(id)
+        call.enqueue(callback)
+    }
+
+    fun getPhotos(callback: Callback<PhotosResult>) {
+        val call = service.getPhotos()
         call.enqueue(callback)
     }
 

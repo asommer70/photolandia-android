@@ -6,17 +6,27 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ImageView
 import com.bumptech.glide.Glide
 import android.os.Bundle
+import android.util.Log
+import android.widget.*
+import org.w3c.dom.Text
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.SimpleDateFormat
 
 
-class PhotoAdapter(private val context: Activity) : BaseAdapter() {
+class PhotoAdapter(private val context: Activity, val photos: List<String>?) : BaseAdapter() {
+    val TAG = PhotoAdapter::class.java.simpleName
     var images: ArrayList<String>? = null
 
     init {
-        images = getAllShownImagesPath(context)
+        if (photos == null) {
+            images = getAllShownImagesPath(context)
+        } else {
+            images = photos as ArrayList<String>
+        }
     }
 
     override fun getCount(): Int {

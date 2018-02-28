@@ -62,8 +62,8 @@ class MainActivity : AppCompatActivity() {
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
                 } else {
-                    val photos = findViewById(R.id.photos) as GridView
-                    photos.adapter = PhotoAdapter(this);
+                    val photos = this.findViewById(R.id.photos) as GridView
+                    photos.adapter = PhotoAdapter(this, null);
                 }
             }
         }
@@ -144,7 +144,6 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.albums -> {
-                Log.d(TAG, "Albums clicked...")
                 val albumsFragment = AlbumsFragment()
                 val fragmentManager = getFragmentManager()
                 val fragmentTransaction = fragmentManager.beginTransaction()
@@ -154,7 +153,14 @@ class MainActivity : AppCompatActivity() {
 
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.photos -> {
+            R.id.serverPhotos -> {
+                val photosFragment = PhotosFragment()
+                val fragmentManager = getFragmentManager()
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentTransaction.replace(R.id.container, photosFragment)
+                fragmentTransaction.addToBackStack(null)
+                fragmentTransaction.commit()
+
                 return@OnNavigationItemSelectedListener true
             }
         }
