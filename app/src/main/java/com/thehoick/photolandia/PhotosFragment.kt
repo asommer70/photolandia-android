@@ -3,6 +3,7 @@ package com.thehoick.photolandia
 import android.app.Activity
 import android.app.Fragment
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -38,6 +39,7 @@ class PhotosFragment: Fragment() {
                 Log.d(TAG, "A problem occurred inside callback for getAlbum()...")
                 progress.visibility = View.INVISIBLE
                 message.setText(getString(R.string.fetching_photos_error))
+                message.setTextColor(Color.RED)
                 message.visibility = View.VISIBLE
             }
 

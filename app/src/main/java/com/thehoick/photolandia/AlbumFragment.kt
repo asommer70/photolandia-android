@@ -39,8 +39,9 @@ class AlbumFragment: Fragment() {
         val callback = object: Callback<Album> {
             override fun onFailure(call: Call<Album>?, t: Throwable?) {
                 Log.d(TAG, "A problem occurred inside callback for getAlbum()...")
-                progressAlbumDetails.visibility = View.INVISIBLE
                 albumDetailName.setText("A problem occured fetching the Album details...")
+                albumDetailName.setTextColor(Color.RED)
+                progressAlbumDetails.visibility = View.INVISIBLE
             }
 
             override fun onResponse(call: Call<Album>?, response: Response<Album>?) {

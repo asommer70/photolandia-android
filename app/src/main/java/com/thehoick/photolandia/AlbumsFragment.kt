@@ -39,7 +39,7 @@ class AlbumsFragment: Fragment() {
                 message.visibility = View.VISIBLE
                 message.setTextColor(Color.RED)
                 message.setText(getString(R.string.albumsError))
-                progress.visibility = View.VISIBLE
+                progress.visibility = View.INVISIBLE
             }
 
             override fun onResponse(call: Call<AlbumResult>?, response: Response<AlbumResult>?) {

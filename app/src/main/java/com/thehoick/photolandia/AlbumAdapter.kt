@@ -44,7 +44,13 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
 
         val album = albums[position]
 
-        Glide.with(context).load(album.photo_set[0].image).into(holder.albumImage!!)
+        // Set the Album image if there is at least one.
+        try {
+            Glide.with(context).load(album.photo_set[0].image).into(holder.albumImage!!)
+        }
+        catch (e: java.lang.ArrayIndexOutOfBoundsException) {
+            Log.d(TAG, "${album.name} doesn't have any images... yet.")
+        }
         holder.albumName!!.setText(album.name)
         val df = SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
         holder.albumCreatedAt!!.setText(df.format(album.created_at))

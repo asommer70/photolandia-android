@@ -38,7 +38,8 @@
         android:numColumns="auto_fit"
         android:padding="4dp"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="5dp" />
+        android:verticalSpacing="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/navigation" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"

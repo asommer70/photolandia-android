@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private val USERNAME = "username"
     private val TOKEN = "token"
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layout.activity_main)
@@ -131,7 +132,7 @@ class MainActivity : AppCompatActivity() {
 
     fun localPhotosFragment() {
         val localPhotosFragment = LocalPhotosFragment()
-        val fragmentManager = getFragmentManager()
+//        val fragmentManager = getFragmentManager()
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.container, localPhotosFragment)
         fragmentTransaction.commit()
@@ -145,7 +146,6 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.albums -> {
                 val albumsFragment = AlbumsFragment()
-                val fragmentManager = getFragmentManager()
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 fragmentTransaction.replace(R.id.container, albumsFragment)
                 fragmentTransaction.addToBackStack(null)
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.serverPhotos -> {
                 val photosFragment = PhotosFragment()
-                val fragmentManager = getFragmentManager()
+//                val fragmentManager = getFragmentManager()
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 fragmentTransaction.replace(R.id.container, photosFragment)
                 fragmentTransaction.addToBackStack(null)
