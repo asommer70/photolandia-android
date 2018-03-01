@@ -4,6 +4,7 @@ package com.thehoick.photolandia
 import android.app.Fragment
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View

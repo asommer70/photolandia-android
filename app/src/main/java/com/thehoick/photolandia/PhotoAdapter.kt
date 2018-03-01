@@ -48,12 +48,9 @@ class PhotoAdapter(private val context: Activity, val photos: List<String>?) : B
 
         picturesView.setOnClickListener {
             val photo = images!![position]
-//            val intent = Intent(context, PhotoView::class.java)
-//            intent.putExtra(PhotoView.PHOTO, photo)
-//            startActivity(context, intent, null)
 
             val photoFragment = PhotoFragment()
-            val data = Bundle()//create bundle instance
+            val data = Bundle()
             data.putString("photo", photo)
             photoFragment.setArguments(data)
             val fragmentTransaction = this.context.fragmentManager.beginTransaction()
@@ -67,7 +64,7 @@ class PhotoAdapter(private val context: Activity, val photos: List<String>?) : B
         return picturesView
     }
 
-    private fun getAllShownImagesPath(activity: Activity): ArrayList<String> {
+    public fun getAllShownImagesPath(activity: Activity): ArrayList<String> {
         val uri: Uri
         val cursor: Cursor?
         val column_index_data: Int

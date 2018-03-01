@@ -3,16 +3,18 @@ package com.thehoick.photolandia
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import okhttp3.Interceptor
+import okhttp3.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
-import okhttp3.OkHttpClient
-import okhttp3.Response
 import retrofit2.http.*
 import java.io.IOException
+import retrofit2.http.POST
+import retrofit2.http.Multipart
+
+
 
 
 val baseUrl = "http://gallium:3000"
@@ -27,6 +29,10 @@ interface PhotolandiaApi {
     @GET("/photos/api")
     fun getPhotos(): Call<PhotosResult>
 
+    @Multipart
+    @POST("/photos/api")
+    fun uploadImage(@Part image: RequestBody): Call<Photo>
+
     @FormUrlEncoded
     @POST("/api/login")
     fun login(@Field("username") username: String, @Field("password") password: String): Call<User>
@@ -36,7 +42,7 @@ class Album(val id: Int, val name: String, val description: String, val created_
 
 class AlbumResult(val count: Float, val next: Int?, val previous: Int?, val results: Array<Album>)
 
-class Photo(val id: Int, val image: String, val caption: String, val createdAt: Date, val updatedAt: Date)
+class Photo(val id: Int, val image: String, val filename: String, val caption: String, val createdAt: Date, val updatedAt: Date)
 
 class PhotosResult(val count: Int, val next: String?, val previous: String?, val results: Array<Photo>)
 
@@ -88,6 +94,11 @@ class Api(val context: Context) {
 
     fun getPhotos(callback: Callback<PhotosResult>) {
         val call = service.getPhotos()
+        call.enqueue(callback)
+    }
+
+    fun uploadImage(body: RequestBody, callback: Callback<Photo>) {
+        val call = service.uploadImage(body)
         call.enqueue(callback)
     }
 

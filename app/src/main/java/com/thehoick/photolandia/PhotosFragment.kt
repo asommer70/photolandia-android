@@ -36,7 +36,7 @@ class PhotosFragment: Fragment() {
 
         val callback = object: Callback<PhotosResult> {
             override fun onFailure(call: Call<PhotosResult>?, t: Throwable?) {
-                Log.d(TAG, "A problem occurred inside callback for getAlbum()...")
+                Log.d(TAG, "A problem occurred inside callback for getPhotos()...")
                 progress.visibility = View.INVISIBLE
                 message.setText(getString(R.string.fetching_photos_error))
                 message.setTextColor(Color.RED)
