@@ -13,6 +13,7 @@ import android.widget.GridView
 import android.widget.ProgressBar
 import android.widget.TextView
 import okhttp3.MediaType
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okio.BufferedSink
 import okio.BufferedSource
@@ -64,7 +65,7 @@ class LocalPhotosFragment: Fragment() {
                 serverPhotos = response?.body()?.results?.map { it.filename }
 
                 // Create a list of file names not on the server.
-                val notOnServer = mutableListOf<String>()
+                val notOnServer = mutableListOf<List<String>>()
 //                var notOnServer = photoNames.map {
 //                    if (it[0] !in serverPhotos!!) {
 //                        Log.d(TAG, "it[1]: ${it[1]}")
@@ -75,7 +76,7 @@ class LocalPhotosFragment: Fragment() {
                 for (photo in photoNames) {
                     if (photo[0] !in serverPhotos!!) {
                         Log.d(TAG, "it[1]: ${photo[1]}")
-                        notOnServer.add(photo[1])
+                        notOnServer.add(photo)
                     }
                 }
 
@@ -84,22 +85,23 @@ class LocalPhotosFragment: Fragment() {
                 Log.d(TAG, "notOnServer[0]: ${notOnServer[0]}")
                 // TODO:as do a HTTP POST to upload the Photo into the default Album.
 
-                for (lP in notOnServer) {
-                    upload(lP)
-                }
+//                for (lP in notOnServer) {
+//                    upload(lP)
+//                }
+                upload(notOnServer[0])
             }
 
         }
         api.getPhotos(callback)
     }
 
-    fun upload(photo: String) {
+    fun upload(photo: List<String>) {
         Snackbar.make(view, "Uploading $photo", Snackbar.LENGTH_SHORT).show()
 
         val api = Api(view.context)
 
         try {
-            val file = File(photo)
+            val file = File(photo[1])
             val fileInputStream = FileInputStream(file)
 
             val img: BufferedSource = Okio.buffer(Okio.source(fileInputStream))
@@ -111,11 +113,17 @@ class LocalPhotosFragment: Fragment() {
                 }
 
                 override fun onResponse(call: Call<Photo>?, response: Response<Photo>?) {
-//                    Log.d(TAG, "response?.body()?.count: ${response?.body()?.count}")
+                    Log.d(TAG, "response?.body()?.filename: ${response?.body()?.filename}")
                 }
             }
 
-            api.uploadImage(RequestBody.create(MediaType.parse("image/jpeg"), image), callback)
+            api.uploadImage(
+                    MultipartBody.Part.createFormData(
+                            "image",
+                            photo[0],
+                            RequestBody.create(MediaType.parse("image/jpeg"), image)),
+                    callback
+            )
         } catch (e: IOException) {
 
         }
