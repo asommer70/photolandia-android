@@ -31,7 +31,7 @@ interface PhotolandiaApi {
 
     @Multipart
     @POST("/photos/api")
-    fun uploadImage(@Part image: MultipartBody.Part): Call<Photo>
+    fun uploadImage(@Part("albums") albumId: RequestBody, @Part image: MultipartBody.Part): Call<Photo>
 
     @FormUrlEncoded
     @POST("/api/login")
@@ -97,8 +97,8 @@ class Api(val context: Context) {
         call.enqueue(callback)
     }
 
-    fun uploadImage(image: MultipartBody.Part, callback: Callback<Photo>) {
-        val call = service.uploadImage(image)
+    fun uploadImage(albumId: RequestBody, image: MultipartBody.Part, callback: Callback<Photo>) {
+        val call = service.uploadImage(albumId, image)
         call.enqueue(callback)
     }
 

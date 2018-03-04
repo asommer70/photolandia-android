@@ -66,13 +66,6 @@ class LocalPhotosFragment: Fragment() {
 
                 // Create a list of file names not on the server.
                 val notOnServer = mutableListOf<List<String>>()
-//                var notOnServer = photoNames.map {
-//                    if (it[0] !in serverPhotos!!) {
-//                        Log.d(TAG, "it[1]: ${it[1]}")
-//                        it[1]
-//                    }
-//                }
-
                 for (photo in photoNames) {
                     if (photo[0] !in serverPhotos!!) {
                         Log.d(TAG, "it[1]: ${photo[1]}")
@@ -80,15 +73,9 @@ class LocalPhotosFragment: Fragment() {
                     }
                 }
 
-//                photoNames.ma
-
-                Log.d(TAG, "notOnServer[0]: ${notOnServer[0]}")
-                // TODO:as do a HTTP POST to upload the Photo into the default Album.
-
-//                for (lP in notOnServer) {
-//                    upload(lP)
-//                }
-                upload(notOnServer[0])
+                for (lP in notOnServer) {
+                    upload(lP)
+                }
             }
 
         }
@@ -117,7 +104,11 @@ class LocalPhotosFragment: Fragment() {
                 }
             }
 
+            val prefs = context.getSharedPreferences(context.getPackageName() + "_preferences", 0)
+            val albumId = prefs.getString("default_album_id", "")
+
             api.uploadImage(
+                    RequestBody.create(MediaType.parse("text/plain"), albumId),
                     MultipartBody.Part.createFormData(
                             "image",
                             photo[0],
