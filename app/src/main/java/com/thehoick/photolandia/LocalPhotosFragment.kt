@@ -1,7 +1,7 @@
 package com.thehoick.photolandia
 
 import android.app.Fragment
-import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
@@ -10,12 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
-import android.widget.ProgressBar
-import android.widget.TextView
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okio.BufferedSink
 import okio.BufferedSource
 import okio.Okio
 import retrofit2.Call
@@ -24,7 +21,6 @@ import retrofit2.Response
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
-import java.io.InputStream
 
 class LocalPhotosFragment: Fragment() {
     val TAG = LocalPhotosFragment::class.java.simpleName
@@ -33,10 +29,10 @@ class LocalPhotosFragment: Fragment() {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
 
         val photos = view.findViewById(R.id.photos) as GridView
-        photos.adapter = PhotoAdapter(activity, null);
-
+        photos.adapter = PhotoAdapter(activity, null, "local")
 
         val syncButton = activity.findViewById<FloatingActionButton>(R.id.sync)
+        syncButton.setImageDrawable(view.context.getDrawable(android.R.drawable.ic_popup_sync))
         syncButton.setOnClickListener {
             sync(view)
         }
@@ -45,9 +41,9 @@ class LocalPhotosFragment: Fragment() {
     }
 
 
-    fun sync(view: View) {
+    private fun sync(view: View) {
         // Get a list of local photo filenames.
-        val localPhotos = PhotoAdapter(activity, null).getAllShownImagesPath(activity)
+        val localPhotos = PhotoAdapter(activity, null, "local").getAllShownImagesPath(activity)
         val photoNames = localPhotos.map { listOf(it.split('/').last(), it) }
         Log.d(TAG, "photoNames[0]: ${photoNames[0]}")
 
@@ -61,8 +57,7 @@ class LocalPhotosFragment: Fragment() {
             override fun onResponse(call: Call<PhotosResult>?, response: Response<PhotosResult>?) {
                 Log.d(TAG, "response?.body()?.count: ${response?.body()?.count}")
 
-                var serverPhotos: List<String>? = null
-                serverPhotos = response?.body()?.results?.map { it.filename }
+                val serverPhotos = response?.body()?.results?.map { it.filename }
 
                 // Create a list of file names not on the server.
                 val notOnServer = mutableListOf<List<String>>()
@@ -104,7 +99,7 @@ class LocalPhotosFragment: Fragment() {
                 }
             }
 
-            val prefs = context.getSharedPreferences(context.getPackageName() + "_preferences", 0)
+            val prefs = context.getSharedPreferences(context.packageName + "_preferences", 0)
             val albumId = prefs.getString("default_album_id", "")
 
             api.uploadImage(

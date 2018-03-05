@@ -1,20 +1,14 @@
 package com.thehoick.photolandia
 
 import android.content.Context
-import android.content.SharedPreferences
-import com.google.gson.Gson
 import okhttp3.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 import retrofit2.http.*
 import java.io.IOException
-import retrofit2.http.POST
-import retrofit2.http.Multipart
-
-
+import java.util.*
 
 
 val baseUrl = "http://gallium:3000"

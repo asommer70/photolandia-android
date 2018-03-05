@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 } else {
                     val photos = this.findViewById(R.id.photos) as GridView
-                    photos.adapter = PhotoAdapter(this, null);
+                    photos.adapter = PhotoAdapter(this, null, "local");
                 }
             }
         }
@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
         invalidateOptionsMenu()
     }
 
-    fun localPhotosFragment() {
+    private fun localPhotosFragment() {
         val localPhotosFragment = LocalPhotosFragment()
 //        val fragmentManager = getFragmentManager()
         val fragmentTransaction = fragmentManager.beginTransaction()

@@ -1,13 +1,13 @@
 package com.thehoick.photolandia
 
-import android.app.Activity
 import android.app.Fragment
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.GridView
 import android.widget.ProgressBar
@@ -30,30 +30,29 @@ class PhotosFragment: Fragment() {
         val progress = context.findViewById<ProgressBar>(R.id.progress)
         val message = context.findViewById<TextView>(R.id.message)
 
-        progress.visibility = View.VISIBLE
-        message.setText(getString(R.string.loading_photos))
-        message.visibility = View.VISIBLE
+        progress.visibility = VISIBLE
+        message.text = getString(R.string.loading_photos)
+        message.visibility = VISIBLE
 
         val callback = object: Callback<PhotosResult> {
             override fun onFailure(call: Call<PhotosResult>?, t: Throwable?) {
                 Log.d(TAG, "A problem occurred inside callback for getPhotos()...")
-                progress.visibility = View.INVISIBLE
-                message.setText(getString(R.string.fetching_photos_error))
+                progress.visibility = INVISIBLE
+                message.text = getString(R.string.fetching_photos_error)
                 message.setTextColor(Color.RED)
-                message.visibility = View.VISIBLE
+                message.visibility = VISIBLE
             }
 
             override fun onResponse(call: Call<PhotosResult>?, response: Response<PhotosResult>?) {
                 Log.d(TAG, "response?.body()?.count: ${response?.body()?.count}")
 
-                progress.visibility = View.INVISIBLE
-                message.visibility = View.INVISIBLE
+                progress.visibility = INVISIBLE
+                message.visibility = INVISIBLE
 
-                var photos: List<String>? = null
-                photos = response?.body()?.results?.map { it.image }
+                val photos = response?.body()?.results?.map { it.image }
 
                 val photosView = context.findViewById(R.id.photos) as GridView
-                photosView.adapter = PhotoAdapter(activity, photos);
+                photosView.adapter = PhotoAdapter(activity, photos, "remote")
             }
 
         }

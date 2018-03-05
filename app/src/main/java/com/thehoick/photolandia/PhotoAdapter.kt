@@ -2,14 +2,17 @@ package com.thehoick.photolandia
 
 import android.app.Activity
 import android.database.Cursor
+import android.graphics.Color
 import android.net.Uri
 import android.provider.MediaStore
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.widget.*
+import android.widget.ImageView.ScaleType.FIT_CENTER
 import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,9 +20,10 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 
 
-class PhotoAdapter(private val context: Activity, val photos: List<String>?) : BaseAdapter() {
+class PhotoAdapter(private val context: Activity, val photos: List<String>?, val type: String) : BaseAdapter() {
     val TAG = PhotoAdapter::class.java.simpleName
     var images: ArrayList<String>? = null
+    var selectedPhotos: MutableList<String>? = null
 
     init {
         if (photos == null) {
@@ -42,9 +46,8 @@ class PhotoAdapter(private val context: Activity, val photos: List<String>?) : B
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val picturesView: ImageView
-        picturesView = ImageView(context)
-        picturesView.setScaleType(ImageView.ScaleType.FIT_CENTER)
+        val picturesView = ImageView(context)
+        picturesView.scaleType = FIT_CENTER
 
         picturesView.setOnClickListener {
             val photo = images!![position]
@@ -52,19 +55,40 @@ class PhotoAdapter(private val context: Activity, val photos: List<String>?) : B
             val photoFragment = PhotoFragment()
             val data = Bundle()
             data.putString("photo", photo)
-            photoFragment.setArguments(data)
+            photoFragment.arguments = data
             val fragmentTransaction = this.context.fragmentManager.beginTransaction()
             fragmentTransaction.replace(R.id.container, photoFragment)
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
         }
 
-        Glide.with(context).load(images!!.get(position)).into(picturesView)
+        if (type.equals("remote")) {
+            picturesView.setOnLongClickListener {
+                val photo = images!![position]
+                Log.d(TAG, "Long click photo: $photo")
+                it.setPadding(4, 2,4 , 2)
+                it.setBackgroundColor(Color.BLACK)
+                this.selectedPhotos?.add(photo)
+                Log.d(TAG, "selectedPhotos: ${this.selectedPhotos}")
+
+                true
+            }
+
+            Log.d(TAG, "selectedPhotos: ${this.selectedPhotos}")
+
+            val syncButton = context.findViewById<FloatingActionButton>(R.id.sync)
+            syncButton.setImageDrawable(context.getDrawable(R.drawable.ic_add_album_icon))
+            syncButton.setOnClickListener {
+                Log.d(TAG, "selectedPhotos: ${this.selectedPhotos}")
+            }
+        }
+
+        Glide.with(context).load(images!![position]).into(picturesView)
 
         return picturesView
     }
 
-    public fun getAllShownImagesPath(activity: Activity): ArrayList<String> {
+    fun getAllShownImagesPath(activity: Activity): ArrayList<String> {
         val uri: Uri
         val cursor: Cursor?
         val column_index_data: Int
