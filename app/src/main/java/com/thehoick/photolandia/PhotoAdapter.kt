@@ -1,6 +1,7 @@
 package com.thehoick.photolandia
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.database.Cursor
 import android.graphics.Color
 import android.net.Uri
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.widget.*
@@ -20,10 +22,10 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 
 
-class PhotoAdapter(private val context: Activity, val photos: List<String>?, val type: String) : BaseAdapter() {
+class PhotoAdapter(private val context: Activity, val photos: List<String>?, val photoList: List<List<String>>?) : BaseAdapter() {
     val TAG = PhotoAdapter::class.java.simpleName
     var images: ArrayList<String>? = null
-    var selectedPhotos: MutableList<String>? = null
+    var selectedPhotos = mutableListOf<List<String>>()
 
     init {
         if (photos == null) {
@@ -46,6 +48,7 @@ class PhotoAdapter(private val context: Activity, val photos: List<String>?, val
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+
         val picturesView = ImageView(context)
         picturesView.scaleType = FIT_CENTER
 
@@ -62,24 +65,50 @@ class PhotoAdapter(private val context: Activity, val photos: List<String>?, val
             fragmentTransaction.commit()
         }
 
-        if (type.equals("remote")) {
+        if (photoList != null) {
             picturesView.setOnLongClickListener {
-                val photo = images!![position]
+                val photo = photoList[position]
                 Log.d(TAG, "Long click photo: $photo")
                 it.setPadding(4, 2,4 , 2)
                 it.setBackgroundColor(Color.BLACK)
-                this.selectedPhotos?.add(photo)
-                Log.d(TAG, "selectedPhotos: ${this.selectedPhotos}")
-
+                this.selectedPhotos.add(photo)
                 true
             }
-
-            Log.d(TAG, "selectedPhotos: ${this.selectedPhotos}")
 
             val syncButton = context.findViewById<FloatingActionButton>(R.id.sync)
             syncButton.setImageDrawable(context.getDrawable(R.drawable.ic_add_album_icon))
             syncButton.setOnClickListener {
-                Log.d(TAG, "selectedPhotos: ${this.selectedPhotos}")
+                val ids = selectedPhotos.map { it[0] }
+                val idsString = ids.joinToString( ",")
+
+                Log.d(TAG, "idsString: ${idsString}")
+
+                val api = Api(this.context)
+                val callback = object: Callback<AlbumResult> {
+                    override fun onFailure(call: Call<AlbumResult>?, t: Throwable?) {
+                        Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
+                        Toast.makeText(context, "A problem occurred inside callback for getAlbums()...", Toast.LENGTH_LONG).show()
+                    }
+
+                    override fun onResponse(call: Call<AlbumResult>?, response: Response<AlbumResult>?) {
+                        Log.d(TAG, "response?.body()?.results: ${response?.body()?.results}")
+
+                        val albums = response?.body()?.results!!
+                        val albumNames = albums.map { "${it.id},${it.name}"} as ArrayList<String>
+
+                        val albumDialogFragment = AlbumDialogFragment()
+                        val bundle = Bundle()
+                        bundle.putStringArrayList(albumDialogFragment.albums, albumNames)
+                        bundle.putString(albumDialogFragment.photoIds, idsString)
+                        albumDialogFragment.arguments = bundle
+                        Log.d(TAG, "context.fragmentManager: ${context.fragmentManager}")
+                        albumDialogFragment.show(context.fragmentManager, "AlbumsDialog")
+
+                        // TODO:as deselect photos.
+                    }
+
+                }
+                api.getAlbums(callback)
             }
         }
 
@@ -111,5 +140,9 @@ class PhotoAdapter(private val context: Activity, val photos: List<String>?, val
 
         cursor.close()
         return listOfAllImages
+    }
+
+    fun addPhotosToAlbum(albumId: Int) {
+
     }
 }

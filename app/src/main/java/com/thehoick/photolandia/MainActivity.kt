@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 } else {
                     val photos = this.findViewById(R.id.photos) as GridView
-                    photos.adapter = PhotoAdapter(this, null, "local");
+                    photos.adapter = PhotoAdapter(this, null, null);
                 }
             }
         }

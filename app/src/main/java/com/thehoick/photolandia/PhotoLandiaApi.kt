@@ -28,6 +28,10 @@ interface PhotolandiaApi {
     fun uploadImage(@Part("albums") albumId: RequestBody, @Part image: MultipartBody.Part): Call<Photo>
 
     @FormUrlEncoded
+    @POST("/albums/api/{id}/add_photos")
+    fun addToAlbum(@Path("id") albumId: String, @Field("photo_ids") photo_ids: String): Call<Album>
+
+    @FormUrlEncoded
     @POST("/api/login")
     fun login(@Field("username") username: String, @Field("password") password: String): Call<User>
 }
@@ -93,6 +97,11 @@ class Api(val context: Context) {
 
     fun uploadImage(albumId: RequestBody, image: MultipartBody.Part, callback: Callback<Photo>) {
         val call = service.uploadImage(albumId, image)
+        call.enqueue(callback)
+    }
+
+    fun addToAlbum(albumId: String, photo_ids: String, callback: Callback<Album>) {
+        val call = service.addToAlbum(albumId, photo_ids)
         call.enqueue(callback)
     }
 

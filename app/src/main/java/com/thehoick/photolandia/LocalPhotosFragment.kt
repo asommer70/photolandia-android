@@ -29,7 +29,7 @@ class LocalPhotosFragment: Fragment() {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
 
         val photos = view.findViewById(R.id.photos) as GridView
-        photos.adapter = PhotoAdapter(activity, null, "local")
+        photos.adapter = PhotoAdapter(activity, null, null)
 
         val syncButton = activity.findViewById<FloatingActionButton>(R.id.sync)
         syncButton.setImageDrawable(view.context.getDrawable(android.R.drawable.ic_popup_sync))
@@ -43,7 +43,7 @@ class LocalPhotosFragment: Fragment() {
 
     private fun sync(view: View) {
         // Get a list of local photo filenames.
-        val localPhotos = PhotoAdapter(activity, null, "local").getAllShownImagesPath(activity)
+        val localPhotos = PhotoAdapter(activity, null, null).getAllShownImagesPath(activity)
         val photoNames = localPhotos.map { listOf(it.split('/').last(), it) }
         Log.d(TAG, "photoNames[0]: ${photoNames[0]}")
 

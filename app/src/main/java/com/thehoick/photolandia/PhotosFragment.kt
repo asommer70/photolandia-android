@@ -50,9 +50,10 @@ class PhotosFragment: Fragment() {
                 message.visibility = INVISIBLE
 
                 val photos = response?.body()?.results?.map { it.image }
+                val photoList = response?.body()?.results?.map { listOf(it.id.toString(), it.image)}
 
                 val photosView = context.findViewById(R.id.photos) as GridView
-                photosView.adapter = PhotoAdapter(activity, photos, "remote")
+                photosView.adapter = PhotoAdapter(activity, photos, photoList)
             }
 
         }
