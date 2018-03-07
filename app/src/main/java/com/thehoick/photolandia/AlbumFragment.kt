@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat
 class AlbumFragment: Fragment() {
     val TAG = AlbumFragment::class.java.simpleName
     public val ALBUM_INDEX = "album_index"
+    var albumPhotoAdapter: AlbumPhotoAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.album_layout, container, false)
@@ -57,8 +58,8 @@ class AlbumFragment: Fragment() {
                 albumDetailCreatedAt.setText(df.format(response?.body()?.created_at))
                 albumDetailUpdatedAt.setText(df.format(response?.body()?.updated_at))
 
-                val albumPhotoAdapter = AlbumPhotoAdapter(activity, response?.body()?.id!!, response?.body()?.photo_set!!)
-                albumDetailPhotosView.setAdapter(albumPhotoAdapter)
+                albumPhotoAdapter = AlbumPhotoAdapter(activity, response?.body()?.id!!, response?.body()?.photo_set!!)
+                albumDetailPhotosView.adapter = albumPhotoAdapter
             }
 
         }

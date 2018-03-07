@@ -20,6 +20,8 @@ import android.widget.ProgressBar
 
 class AlbumsFragment: Fragment() {
     val TAG = AlbumsFragment::class.java.simpleName
+    var albumAdapter: AlbumAdapter? = null
+        get() = field
 
     fun getAlbums(view: View) {
         val api = Api(view.context)
@@ -51,7 +53,8 @@ class AlbumsFragment: Fragment() {
                 photoGrid.visibility = VISIBLE
                 message.visibility = INVISIBLE
                 progress.visibility = VISIBLE
-                val albumAdapter = AlbumAdapter(activity, response?.body()?.results!!)
+
+                albumAdapter = AlbumAdapter(activity, response?.body()?.results!!)
                 albumsView.setAdapter(albumAdapter)
             }
 
@@ -62,8 +65,6 @@ class AlbumsFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
-
-        val syncButton = view.findViewById<FloatingActionButton>(R.id.sync)
 
         getAlbums(view)
         return view

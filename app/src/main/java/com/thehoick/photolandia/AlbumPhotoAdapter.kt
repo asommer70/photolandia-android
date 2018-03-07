@@ -65,7 +65,7 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
             Log.d(TAG, "Long click photo: $photo")
             it.setPadding(4, 2,4 , 2)
             it.setBackgroundColor(Color.BLACK)
-            this.selectedPhotos.add(listOf(photo.id.toString(), photo.image))
+            this.selectedPhotos.add(listOf(photo.id.toString(), photo.image, position.toString()))
             syncButton.setImageDrawable(context.getDrawable(android.R.drawable.ic_menu_delete))
             true
         }
@@ -87,8 +87,22 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
                 override fun onResponse(call: Call<Album>?, response: Response<Album>?) {
                     Log.d(TAG, "response?.body()?: ${response?.body()?.toString()}")
 
-
-                    // TODO:as deselect photos.
+                    // Refresh Album photos.
+                    val newImages = images!!.toMutableList()
+                    var isZero = false
+                    for (photo in selectedPhotos) {
+                        // For whatever reason there's an artififact of the first image if it's selected for removal first.
+                        if (photo[2].toInt().equals(0)) {
+                            isZero = true
+                        } else {
+                            newImages.removeAt(photo[2].toInt())
+                        }
+                    }
+                    if (isZero) {
+                        newImages.removeAt(0)
+                    }
+                    images = newImages.toTypedArray()
+                    notifyDataSetChanged()
                 }
 
             }

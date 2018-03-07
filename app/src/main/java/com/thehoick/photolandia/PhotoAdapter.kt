@@ -104,7 +104,8 @@ class PhotoAdapter(private val context: Activity, val photos: List<String>?, val
                         Log.d(TAG, "context.fragmentManager: ${context.fragmentManager}")
                         albumDialogFragment.show(context.fragmentManager, "AlbumsDialog")
 
-                        // TODO:as deselect photos.
+                        // Deselect photos.
+                        notifyDataSetChanged()
                     }
 
                 }
