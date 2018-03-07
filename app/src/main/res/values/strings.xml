@@ -5,4 +5,6 @@
     <string name="fetching_photos_error">A problem occured fetching the Photos...</string>
     <string name="loading_photos">Loading photos...</string>
     <string name="add_photos_to_album">Add Photos to Album</string>
+    <string name="create_album">Create Album</string>
+    <string name="problem_fetching_album_details">A problem occured fetching the Album details...</string>
 </resources>

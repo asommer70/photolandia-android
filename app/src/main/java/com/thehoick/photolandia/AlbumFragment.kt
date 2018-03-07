@@ -31,9 +31,10 @@ class AlbumFragment: Fragment() {
         val api = Api(view.context)
         val albumDetailName = view.findViewById<TextView>(R.id.albumDetailName)
         val albumDetailDescription = view.findViewById<TextView>(R.id.albumDetailDescription)
+        val albumDetailId = view.findViewById<TextView>(R.id.albumDetailId)
         val albumDetailCreatedAt = view.findViewById<TextView>(R.id.albumDetailCreatedAt)
         val albumDetailUpdatedAt = view.findViewById<TextView>(R.id.albumDetailUpdatedAt)
-        val albumDetailPhotos = view.findViewById<GridView>(R.id.albumDetailPhotos)
+//        val albumDetailPhotos = view.findViewById<GridView>(R.id.albumDetailPhotos)
         val progressAlbumDetails = view.findViewById<ProgressBar>(R.id.progressAlbumDetails)
 
         progressAlbumDetails.visibility = View.VISIBLE
@@ -41,7 +42,7 @@ class AlbumFragment: Fragment() {
         val callback = object: Callback<Album> {
             override fun onFailure(call: Call<Album>?, t: Throwable?) {
                 Log.d(TAG, "A problem occurred inside callback for getAlbum()...")
-                albumDetailName.setText("A problem occured fetching the Album details...")
+                albumDetailName.setText(getString(R.string.problem_fetching_album_details))
                 albumDetailName.setTextColor(Color.RED)
                 progressAlbumDetails.visibility = View.INVISIBLE
             }
@@ -54,6 +55,7 @@ class AlbumFragment: Fragment() {
 
                 albumDetailName.setText(response?.body()?.name)
                 albumDetailDescription.setText(response?.body()?.description)
+                albumDetailId.setText("Album ID Number: ${response?.body()?.id.toString()}")
                 val df = SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
                 albumDetailCreatedAt.setText(df.format(response?.body()?.created_at))
                 albumDetailUpdatedAt.setText(df.format(response?.body()?.updated_at))

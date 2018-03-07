@@ -32,8 +32,8 @@
         android:id="@+id/albumDetailCreatedAt"
         android:layout_width="133dp"
         android:layout_height="18dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="40dp"
         android:text="createdAt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/albumDetailDescription" />
@@ -42,8 +42,8 @@
         android:id="@+id/albumDetailUpdatedAt"
         android:layout_width="133dp"
         android:layout_height="18dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="40dp"
         android:text="updatedAt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/albumDetailDescription" />
@@ -62,7 +62,7 @@
     <GridView
         android:id="@+id/albumDetailPhotos"
         android:layout_width="351dp"
-        android:layout_height="382dp"
+        android:layout_height="336dp"
         android:layout_marginBottom="2dp"
         android:layout_marginEnd="4dp"
         android:layout_marginStart="4dp"
@@ -76,6 +76,15 @@
         android:verticalSpacing="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/albumDetailDescription" />
+
+    <TextView
+        android:id="@+id/albumDetailId"
+        android:layout_width="200dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/albumDetailDescription" />
 

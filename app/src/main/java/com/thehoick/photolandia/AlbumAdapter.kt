@@ -2,6 +2,7 @@ package com.thehoick.photolandia
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -54,6 +55,17 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
         holder.albumName!!.setText(album.name)
         val df = SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
         holder.albumCreatedAt!!.setText(df.format(album.created_at))
+
+        val syncButton = context.findViewById<FloatingActionButton>(R.id.sync)
+        syncButton.setImageDrawable(context.getDrawable(android.R.drawable.ic_input_add))
+        syncButton.setOnClickListener {
+            // Input DialogFragment.
+            Log.d(TAG, "Creating album...")
+            val albumCreateDialogFragment = AlbumCreateDialogFragment()
+//            val bundle = Bundle()
+//            albumCreateDialogFragment.arguments = bundle
+            albumCreateDialogFragment.show(context.fragmentManager, "AlbumsDialog")
+        }
 
         return row!!
     }

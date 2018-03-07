@@ -36,6 +36,10 @@ interface PhotolandiaApi {
     fun removeFromAlbum(@Path("id") albumId: String, @Field("photo_ids") photo_ids: String): Call<Album>
 
     @FormUrlEncoded
+    @POST("/albums/api")
+    fun createAlbum(@Field("name") name: String): Call<Album>
+
+    @FormUrlEncoded
     @POST("/api/login")
     fun login(@Field("username") username: String, @Field("password") password: String): Call<User>
 }
@@ -110,7 +114,12 @@ class Api(val context: Context) {
     }
 
     fun removeFromAlbum(albumId: String, photo_ids: String, callback: Callback<Album>) {
-        val call = service.removeFromAlbum(albumId, photo_ids)
+        val call = service.addToAlbum(albumId, photo_ids)
+        call.enqueue(callback)
+    }
+
+    fun createAlbum(name: String, callback: Callback<Album>) {
+        val call = service.createAlbum(name)
         call.enqueue(callback)
     }
 

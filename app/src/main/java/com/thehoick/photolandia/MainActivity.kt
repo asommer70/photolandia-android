@@ -13,6 +13,7 @@ import com.thehoick.photolandia.R.*
 import android.content.Intent
 import android.content.SharedPreferences
 import android.support.design.widget.BottomNavigationView
+import android.support.design.widget.FloatingActionButton
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
@@ -144,6 +145,13 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.albums -> {
+
+//                val syncButton = findViewById<FloatingActionButton>(R.id.sync)
+//                syncButton.setImageDrawable(getDrawable(android.R.drawable.ic_menu_add))
+//                syncButton.setOnClickListener {
+//                    // Input DialogFragment.
+//                }
+
                 val albumsFragment = AlbumsFragment()
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 fragmentTransaction.replace(R.id.container, albumsFragment)
