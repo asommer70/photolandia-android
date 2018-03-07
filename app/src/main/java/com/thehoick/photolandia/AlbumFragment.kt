@@ -57,7 +57,7 @@ class AlbumFragment: Fragment() {
                 albumDetailCreatedAt.setText(df.format(response?.body()?.created_at))
                 albumDetailUpdatedAt.setText(df.format(response?.body()?.updated_at))
 
-                val albumPhotoAdapter = AlbumPhotoAdapter(activity, response?.body()?.photo_set!!)
+                val albumPhotoAdapter = AlbumPhotoAdapter(activity, response?.body()?.id!!, response?.body()?.photo_set!!)
                 albumDetailPhotosView.setAdapter(albumPhotoAdapter)
             }
 

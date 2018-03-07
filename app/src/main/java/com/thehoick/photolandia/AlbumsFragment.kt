@@ -13,6 +13,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.app.ProgressDialog
+import android.support.design.widget.FloatingActionButton
+import android.view.View.*
 import android.widget.ProgressBar
 
 
@@ -24,31 +26,31 @@ class AlbumsFragment: Fragment() {
         val message = view.findViewById<TextView>(R.id.message)
         val progress = view.findViewById<ProgressBar>(R.id.progress)
         val photoGrid = view.findViewById<GridView>(R.id.photos)
-        photoGrid.visibility = View.INVISIBLE
+        photoGrid.visibility = INVISIBLE
 
         message.setText(getString(R.string.fetching_albums))
-        message.visibility = View.VISIBLE
+        message.visibility = VISIBLE
         message.setTextColor(Color.BLACK)
-        progress.visibility = View.VISIBLE
+        progress.visibility = VISIBLE
 
 
         val callback = object: Callback<AlbumResult> {
             override fun onFailure(call: Call<AlbumResult>?, t: Throwable?) {
                 Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
-                photoGrid.visibility = View.INVISIBLE
-                message.visibility = View.VISIBLE
+                photoGrid.visibility = INVISIBLE
+                message.visibility = VISIBLE
                 message.setTextColor(Color.RED)
                 message.setText(getString(R.string.albumsError))
-                progress.visibility = View.INVISIBLE
+                progress.visibility = INVISIBLE
             }
 
             override fun onResponse(call: Call<AlbumResult>?, response: Response<AlbumResult>?) {
                 val albumsView = view.findViewById<GridView>(R.id.photos)
                 Log.d(TAG, "response?.body()?.results: ${response?.body()?.results}")
 
-                photoGrid.visibility = View.VISIBLE
-                message.visibility = View.INVISIBLE
-                progress.visibility = View.VISIBLE
+                photoGrid.visibility = VISIBLE
+                message.visibility = INVISIBLE
+                progress.visibility = VISIBLE
                 val albumAdapter = AlbumAdapter(activity, response?.body()?.results!!)
                 albumsView.setAdapter(albumAdapter)
             }
@@ -60,6 +62,8 @@ class AlbumsFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
+
+        val syncButton = view.findViewById<FloatingActionButton>(R.id.sync)
 
         getAlbums(view)
         return view

@@ -132,7 +132,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun localPhotosFragment() {
         val localPhotosFragment = LocalPhotosFragment()
-//        val fragmentManager = getFragmentManager()
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.container, localPhotosFragment)
         fragmentTransaction.commit()
@@ -155,7 +154,6 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.serverPhotos -> {
                 val photosFragment = PhotosFragment()
-//                val fragmentManager = getFragmentManager()
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 fragmentTransaction.replace(R.id.container, photosFragment)
                 fragmentTransaction.addToBackStack(null)
