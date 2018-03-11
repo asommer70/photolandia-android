@@ -1,27 +1,23 @@
 package com.thehoick.photolandia
 
-import android.app.AlertDialog
 import android.app.Fragment
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.GridView
+import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.app.ProgressDialog
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.support.design.widget.FloatingActionButton
-import android.view.View.*
-import android.widget.ProgressBar
-import android.content.DialogInterface.BUTTON_POSITIVE
-import android.widget.Toast
 
 
 class AlbumsFragment: Fragment() {

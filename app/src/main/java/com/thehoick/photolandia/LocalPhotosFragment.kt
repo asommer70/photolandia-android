@@ -1,7 +1,6 @@
 package com.thehoick.photolandia
 
 import android.app.Fragment
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
@@ -51,7 +50,6 @@ class LocalPhotosFragment: Fragment() {
         return view
     }
 
-
     private fun sync(view: View) {
         // Get a list of local photo filenames.
         val localPhotos = PhotoAdapter(activity, null, null).getAllShownImagesPath(activity)
@@ -72,16 +70,19 @@ class LocalPhotosFragment: Fragment() {
 
                 // Create a list of file names not on the server.
                 val notOnServer = mutableListOf<List<String>>()
-                for (photo in photoNames) {
+                for (photo in photoNames.take(30).toList()) {
                     if (photo[0] !in serverPhotos!!) {
                         Log.d(TAG, "it[1]: ${photo[1]}")
                         notOnServer.add(photo)
                     }
                 }
 
+                // Get the first 30 photos and upload them.
                 for (lP in notOnServer) {
                     upload(lP)
                 }
+
+//                upload(notOnServer[0])
             }
 
         }

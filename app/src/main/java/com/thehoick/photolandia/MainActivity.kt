@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         }
 
-        prefs = this.getSharedPreferences(this.getPackageName() + "_preferences", 0)
+        prefs = this.getSharedPreferences(this.packageName + "_preferences", 0)
         token = prefs?.getString(TOKEN, null)
     }
 
