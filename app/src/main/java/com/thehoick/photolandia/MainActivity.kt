@@ -146,12 +146,6 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.albums -> {
 
-//                val syncButton = findViewById<FloatingActionButton>(R.id.sync)
-//                syncButton.setImageDrawable(getDrawable(android.R.drawable.ic_menu_add))
-//                syncButton.setOnClickListener {
-//                    // Input DialogFragment.
-//                }
-
                 val albumsFragment = AlbumsFragment()
                 val fragmentTransaction = fragmentManager.beginTransaction()
 

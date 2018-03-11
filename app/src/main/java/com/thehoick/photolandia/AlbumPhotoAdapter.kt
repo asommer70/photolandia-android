@@ -18,6 +18,8 @@ import android.widget.Toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.GridView
+import com.bumptech.glide.request.RequestOptions
 
 
 class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images: Array<Photo>) : BaseAdapter() {
@@ -45,7 +47,9 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val picturesView: ImageView
         picturesView = ImageView(context)
-        picturesView.setScaleType(ImageView.ScaleType.FIT_CENTER)
+//        picturesView.setScaleType(ImageView.ScaleType.FIT_XY)
+//        picturesView.setLayoutParams(GridView.LayoutParams(imageWidth, imageWidth))
+//        picturesView.setPadding(0, 10, 0, 18)
 
         picturesView.setOnClickListener {
             val photo = images!![position]
