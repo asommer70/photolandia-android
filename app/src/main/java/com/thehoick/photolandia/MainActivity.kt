@@ -1,6 +1,7 @@
 package com.thehoick.photolandia
 
 import android.Manifest
+import android.app.Activity
 import android.app.FragmentManager
 import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
@@ -14,8 +15,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.NavigationView
+import android.support.v7.view.menu.MenuView
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -50,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         prefs = this.getSharedPreferences(this.getPackageName() + "_preferences", 0)
+        token = prefs?.getString(TOKEN, null)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -128,6 +133,15 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        Log.d(TAG, "onActiviyResult resultCode: $resultCode")
+        if (resultCode == 700) {
+            Log.d(TAG, "Logged in successfully from Albums...")
+
+            findViewById<View>(R.id.albums).performClick()
+        } else if (resultCode == 800) {
+            findViewById<View>(R.id.serverPhotos).performClick()
+
+        }
         invalidateOptionsMenu()
     }
 
@@ -145,22 +159,49 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.albums -> {
+                token = prefs!!.getString(TOKEN, "")
+                if (token.isNullOrEmpty()) {
+                    // Open the LoginActivity.
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.putExtra("loginType", "albums");
+                    startActivityForResult(intent, 200)
 
-                val albumsFragment = AlbumsFragment()
-                val fragmentTransaction = fragmentManager.beginTransaction()
+                    val needToLoginFragment = NeedToLoginFragment()
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.replace(R.id.container, needToLoginFragment, "needtologin_fragment")
+                    fragmentTransaction.addToBackStack(null)
+                    fragmentTransaction.commit()
+                } else {
+                    val albumsFragment = AlbumsFragment()
+                    val fragmentTransaction = fragmentManager.beginTransaction()
 
-                fragmentTransaction.replace(R.id.container, albumsFragment, "albums_fragment")
-                fragmentTransaction.addToBackStack(null)
-                fragmentTransaction.commit()
+                    fragmentTransaction.replace(R.id.container, albumsFragment, "albums_fragment")
+                    fragmentTransaction.addToBackStack(null)
+                    fragmentTransaction.commit()
+                }
 
                 return@OnNavigationItemSelectedListener true
             }
             R.id.serverPhotos -> {
-                val photosFragment = PhotosFragment()
-                val fragmentTransaction = fragmentManager.beginTransaction()
-                fragmentTransaction.replace(R.id.container, photosFragment)
-                fragmentTransaction.addToBackStack(null)
-                fragmentTransaction.commit()
+                token = prefs!!.getString(TOKEN, "")
+                if (token.isNullOrEmpty()) {
+                    // Open the LoginActivity.
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.putExtra("loginType", "photos");
+                    startActivityForResult(intent, 300)
+
+                    val needToLoginFragment = NeedToLoginFragment()
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.replace(R.id.container, needToLoginFragment, "needtologin_fragment")
+                    fragmentTransaction.addToBackStack(null)
+                    fragmentTransaction.commit()
+                } else {
+                    val photosFragment = PhotosFragment()
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.replace(R.id.container, photosFragment)
+                    fragmentTransaction.addToBackStack(null)
+                    fragmentTransaction.commit()
+                }
 
                 return@OnNavigationItemSelectedListener true
             }

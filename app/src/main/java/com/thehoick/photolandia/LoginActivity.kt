@@ -1,8 +1,11 @@
 package com.thehoick.photolandia
 
+import android.app.Activity
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.view.menu.MenuView
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -26,7 +29,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_layout)
 
-        prefs = this.getSharedPreferences(this.getPackageName() + "_preferences", 0)
+        val extras = intent.extras
+
+        prefs = this.getSharedPreferences(this.packageName + "_preferences", 0)
 
         usernameInput = findViewById(R.id.usernameInput)
         passwordInput = findViewById(R.id.passwordInput)
@@ -42,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<User>?, t: Throwable?) {
                     Log.d(TAG, "A problem occurred logging in...")
                     // Display login error message.
-                    statusText!!.setText("Bad username or password.")
+                    statusText!!.text = getString(R.string.bad_username_or_password)
                     statusText!!.visibility = View.VISIBLE
                 }
 
@@ -52,11 +57,16 @@ class LoginActivity : AppCompatActivity() {
                     editor.putString(USERNAME, response?.body()?.username)
                     editor.putString(TOKEN, response?.body()?.token)
                     if (response?.body()?.id != null) {
-                        editor.putInt(USER_ID, response?.body()?.id as Int)
+                        editor.putInt(USER_ID, response.body()?.id as Int)
                     }
                     editor.apply()
                     Toast.makeText(this@LoginActivity, response?.body()?.message, Toast.LENGTH_LONG).show()
-                    setResult(RESULT_OK, intent);
+
+                    if (extras.get("loginType").equals("albums")) {
+                        setResult(700, intent)
+                    } else {
+                        setResult(800, intent)
+                    }
                     finish()
                 }
 
@@ -64,5 +74,11 @@ class LoginActivity : AppCompatActivity() {
             api.login(username, password, callback)
 
         }
+    }
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_CANCELED, intent)
+        finish()
+        super.onBackPressed()
     }
 }
