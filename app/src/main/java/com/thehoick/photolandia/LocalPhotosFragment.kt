@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
+import android.widget.Toast
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -34,7 +35,17 @@ class LocalPhotosFragment: Fragment() {
         val syncButton = activity.findViewById<FloatingActionButton>(R.id.sync)
         syncButton.setImageDrawable(view.context.getDrawable(android.R.drawable.ic_popup_sync))
         syncButton.setOnClickListener {
-            sync(view)
+            val prefs = activity.getSharedPreferences(activity.packageName + "_preferences", 0)
+            val defaultAlbumId = prefs!!.getString("default_album_id", null)
+            if (defaultAlbumId.isNullOrEmpty()) {
+                Toast.makeText(context, "Please configure a default Alubm ID!", Toast.LENGTH_LONG).show()
+                fragmentManager.beginTransaction()
+                        .addToBackStack("Settings")
+                        .replace(android.R.id.content, Settings())
+                        .commit()
+            } else {
+                sync(view)
+            }
         }
 
         return view

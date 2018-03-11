@@ -1,25 +1,20 @@
 package com.thehoick.photolandia
 
 import android.Manifest
-import android.app.Activity
-import android.app.FragmentManager
-import android.content.pm.PackageManager
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.util.Log
-import android.widget.GridView
-import com.thehoick.photolandia.R.*
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.NavigationView
-import android.support.v7.view.menu.MenuView
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.GridView
+import com.thehoick.photolandia.R.layout
 import kotlinx.android.synthetic.main.activity_main.*
 
 

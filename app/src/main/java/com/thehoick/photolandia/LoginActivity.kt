@@ -32,6 +32,14 @@ class LoginActivity : AppCompatActivity() {
         val extras = intent.extras
 
         prefs = this.getSharedPreferences(this.packageName + "_preferences", 0)
+        val url = prefs!!.getString("url", null)
+        if (url.isNullOrEmpty()) {
+            Toast.makeText(this@LoginActivity, "Please configure the URL in Settings!", Toast.LENGTH_LONG).show()
+            fragmentManager.beginTransaction()
+                    .addToBackStack("Settings")
+                    .replace(android.R.id.content, Settings())
+                    .commit()
+        }
 
         usernameInput = findViewById(R.id.usernameInput)
         passwordInput = findViewById(R.id.passwordInput)
