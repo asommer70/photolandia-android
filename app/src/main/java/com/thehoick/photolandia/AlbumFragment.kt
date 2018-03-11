@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
 import android.view.ViewGroup
 import android.widget.GridView
 import android.widget.ProgressBar
@@ -34,7 +35,6 @@ class AlbumFragment: Fragment() {
         val albumDetailId = view.findViewById<TextView>(R.id.albumDetailId)
         val albumDetailCreatedAt = view.findViewById<TextView>(R.id.albumDetailCreatedAt)
         val albumDetailUpdatedAt = view.findViewById<TextView>(R.id.albumDetailUpdatedAt)
-//        val albumDetailPhotos = view.findViewById<GridView>(R.id.albumDetailPhotos)
         val progressAlbumDetails = view.findViewById<ProgressBar>(R.id.progressAlbumDetails)
 
         progressAlbumDetails.visibility = View.VISIBLE
@@ -44,14 +44,14 @@ class AlbumFragment: Fragment() {
                 Log.d(TAG, "A problem occurred inside callback for getAlbum()...")
                 albumDetailName.setText(getString(R.string.problem_fetching_album_details))
                 albumDetailName.setTextColor(Color.RED)
-                progressAlbumDetails.visibility = View.INVISIBLE
+                progressAlbumDetails.visibility = INVISIBLE
             }
 
             override fun onResponse(call: Call<Album>?, response: Response<Album>?) {
                 val albumDetailPhotosView = view.findViewById<GridView>(R.id.albumDetailPhotos)
                 Log.d(TAG, "response?.body()?.name: ${response?.body()?.name}")
 
-                progressAlbumDetails.visibility = View.INVISIBLE
+                progressAlbumDetails.visibility = INVISIBLE
 
                 albumDetailName.setText(response?.body()?.name)
                 albumDetailDescription.setText(response?.body()?.description)
@@ -60,7 +60,7 @@ class AlbumFragment: Fragment() {
                 albumDetailCreatedAt.setText(df.format(response?.body()?.created_at))
                 albumDetailUpdatedAt.setText(df.format(response?.body()?.updated_at))
 
-                albumPhotoAdapter = AlbumPhotoAdapter(activity, response?.body()?.id!!, response?.body()?.photo_set!!)
+                albumPhotoAdapter = AlbumPhotoAdapter(activity, response?.body()?.id!!, response.body()?.photo_set!!)
                 albumDetailPhotosView.adapter = albumPhotoAdapter
             }
 

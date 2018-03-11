@@ -1,19 +1,28 @@
 package com.thehoick.photolandia
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import com.bumptech.glide.Glide
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.SimpleDateFormat
 
 class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter() {
     val TAG = AlbumAdapter::class.java.simpleName
+    var albumList: Array<Album>? = null
+
+    init{
+        albumList = albums
+    }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var row = convertView
@@ -31,7 +40,7 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
             holder.albumImage?.setOnClickListener() {
                 val albumFragment = AlbumFragment()
                 val data = Bundle()
-                data.putInt("album", albums[position].id)
+                data.putInt("album", albumList!![position].id)
                 albumFragment.setArguments(data)
                 val fragmentTransaction = this.context.fragmentManager.beginTransaction()
                 fragmentTransaction.replace(R.id.container, albumFragment)
@@ -43,7 +52,7 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
             holder = row.getTag() as ViewHolder
         }
 
-        val album = albums[position]
+        val album = albumList!![position]
 
         // Set the Album image if there is at least one.
         try {
@@ -51,21 +60,11 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
         }
         catch (e: java.lang.ArrayIndexOutOfBoundsException) {
             Log.d(TAG, "${album.name} doesn't have any images... yet.")
+            Glide.with(context).load("https://via.placeholder.com/150x250?text=No%20Image%20Yet...").into(holder.albumImage!!)
         }
         holder.albumName!!.setText(album.name)
         val df = SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
         holder.albumCreatedAt!!.setText(df.format(album.created_at))
-
-        val syncButton = context.findViewById<FloatingActionButton>(R.id.sync)
-        syncButton.setImageDrawable(context.getDrawable(android.R.drawable.ic_input_add))
-        syncButton.setOnClickListener {
-            // Input DialogFragment.
-            Log.d(TAG, "Creating album...")
-            val albumCreateDialogFragment = AlbumCreateDialogFragment()
-//            val bundle = Bundle()
-//            albumCreateDialogFragment.arguments = bundle
-            albumCreateDialogFragment.show(context.fragmentManager, "AlbumsDialog")
-        }
 
         return row!!
     }
@@ -79,7 +78,7 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
     }
 
     override fun getCount(): Int {
-        return albums.size
+        return albumList!!.size
     }
 
     private inner class ViewHolder: View.OnContextClickListener {
@@ -91,5 +90,24 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
             Log.d(TAG, "onContextClick v: $v")
             return true
         }
+    }
+
+    fun getAlbums(context: Context) {
+        Log.d(TAG, "AlbumAdaptoer.getAlbums()...")
+        val api = Api(context)
+        val callback = object: Callback<AlbumResult> {
+            override fun onFailure(call: Call<AlbumResult>?, t: Throwable?) {
+                Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
+            }
+
+            override fun onResponse(call: Call<AlbumResult>?, response: Response<AlbumResult>?) {
+                Log.d(TAG, "getAlbums() response?.body()?.results.size: ${response?.body()?.results!!.size}")
+                this@AlbumAdapter.albumList = response.body()?.results!!
+                this@AlbumAdapter.notifyDataSetInvalidated()
+                this@AlbumAdapter.notifyDataSetChanged()
+            }
+
+        }
+        api.getAlbums(callback)
     }
 }

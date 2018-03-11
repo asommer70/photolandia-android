@@ -154,7 +154,8 @@ class MainActivity : AppCompatActivity() {
 
                 val albumsFragment = AlbumsFragment()
                 val fragmentTransaction = fragmentManager.beginTransaction()
-                fragmentTransaction.replace(R.id.container, albumsFragment)
+
+                fragmentTransaction.replace(R.id.container, albumsFragment, "albums_fragment")
                 fragmentTransaction.addToBackStack(null)
                 fragmentTransaction.commit()
 
