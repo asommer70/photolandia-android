@@ -1,31 +1,26 @@
 package com.thehoick.photolandia
 
 import android.app.Activity
-import android.database.Cursor
 import android.graphics.Color
-import android.net.Uri
-import android.provider.MediaStore
+import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.util.Log
-import android.view.View.*
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.thehoick.photolandia.models.Photo
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.widget.GridView
-import com.bumptech.glide.request.RequestOptions
 
 
 class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images: Array<Photo>) : BaseAdapter() {
     val TAG = AlbumPhotoAdapter::class.java.simpleName
     var images: Array<Photo>? = null
-    var selectedPhotos = mutableListOf<List<String>>()
+    var selectedPhotos = mutableListOf<List<String?>>()
     val syncButton = context.findViewById<FloatingActionButton>(R.id.sync)
 
     init {
@@ -79,7 +74,7 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
             val ids = selectedPhotos.map { it[0] }
             val idsString = ids.joinToString( ",")
 
-            Log.d(TAG, "idsString: ${idsString}")
+            Log.d(TAG, "idsString: $idsString")
 
             val api = Api(this.context)
             val callback = object: Callback<Album> {
@@ -96,10 +91,10 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
                     var isZero = false
                     for (photo in selectedPhotos) {
                         // For whatever reason there's an artififact of the first image if it's selected for removal first.
-                        if (photo[2].toInt().equals(0)) {
+                        if (photo[2]!!.toInt().equals(0)) {
                             isZero = true
                         } else {
-                            newImages.removeAt(photo[2].toInt())
+                            newImages.removeAt(photo[2]!!.toInt())
                         }
                     }
                     if (isZero) {

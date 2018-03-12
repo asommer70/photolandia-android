@@ -1,6 +1,7 @@
 package com.thehoick.photolandia
 
 import android.content.Context
+import com.thehoick.photolandia.models.Photo
 import okhttp3.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,7 +26,13 @@ interface PhotolandiaApi {
 
     @Multipart
     @POST("/photos/api")
-    fun uploadImage(@Part("albums") albumId: RequestBody, @Part image: MultipartBody.Part): Call<Photo>
+    fun uploadImage(
+            @Part("albums") albumId: RequestBody,
+            @Part("local_filename") localFilename: RequestBody,
+            @Part("local_path") localPath: RequestBody,
+            @Part("local_id") localId: RequestBody,
+            @Part image: MultipartBody.Part
+    ): Call<Photo>
 
     @FormUrlEncoded
     @POST("/albums/api/{id}/add_photos")
@@ -48,7 +55,7 @@ class Album(val id: Int, val name: String, val description: String, val created_
 
 class AlbumResult(val count: Float, val next: Int?, val previous: Int?, val results: Array<Album>)
 
-class Photo(val id: Int, val image: String, val filename: String, val caption: String, val createdAt: Date, val updatedAt: Date)
+//class Photo(val id: Int, val image: String, val filename: String, val caption: String, val createdAt: Date, val updatedAt: Date)
 
 class PhotosResult(val count: Int, val next: String?, val previous: String?, val results: Array<Photo>)
 
@@ -103,8 +110,13 @@ class Api(val context: Context) {
         call.enqueue(callback)
     }
 
-    fun uploadImage(albumId: RequestBody, image: MultipartBody.Part, callback: Callback<Photo>) {
-        val call = service.uploadImage(albumId, image)
+    fun uploadImage(albumId: RequestBody,
+                    localFilename: RequestBody,
+                    localPath: RequestBody,
+                    localId: RequestBody,
+                    image: MultipartBody.Part,
+                    callback: Callback<Photo>) {
+        val call = service.uploadImage(albumId, localFilename, localPath, localId, image)
         call.enqueue(callback)
     }
 

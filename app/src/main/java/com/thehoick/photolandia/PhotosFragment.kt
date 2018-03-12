@@ -53,7 +53,7 @@ class PhotosFragment: Fragment() {
                 val photoList = response?.body()?.results?.map { listOf(it.id.toString(), it.image)}
 
                 val photosView = context.findViewById(R.id.photos) as GridView
-                photosView.adapter = PhotoAdapter(activity, photos, photoList)
+                photosView.adapter = PhotoAdapter(activity, null, photos as List<String>, photoList as List<List<String>>?)
             }
 
         }

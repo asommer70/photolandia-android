@@ -1,7 +1,12 @@
 package com.thehoick.photolandia
 
+import android.app.Activity
 import android.app.Fragment
+import android.database.Cursor
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.util.Log
@@ -10,6 +15,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
 import android.widget.Toast
+import com.thehoick.photolandia.database.PhotolandiaDataSource
+import com.thehoick.photolandia.models.Photo
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -21,6 +28,7 @@ import retrofit2.Response
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
 
 class LocalPhotosFragment: Fragment() {
     val TAG = LocalPhotosFragment::class.java.simpleName
@@ -29,7 +37,7 @@ class LocalPhotosFragment: Fragment() {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
 
         val photos = view.findViewById(R.id.photos) as GridView
-        photos.adapter = PhotoAdapter(activity, null, null)
+        photos.adapter = PhotoAdapter(activity, getLocalPhotos(activity), null)
 
         val syncButton = activity.findViewById<FloatingActionButton>(R.id.sync)
         syncButton.setImageDrawable(view.context.getDrawable(android.R.drawable.ic_popup_sync))
@@ -50,52 +58,117 @@ class LocalPhotosFragment: Fragment() {
         return view
     }
 
-    private fun sync(view: View) {
-        // Get a list of local photo filenames.
-        val localPhotos = PhotoAdapter(activity, null, null).getAllShownImagesPath(activity)
-        val photoNames = localPhotos.map { listOf(it.split('/').last(), it) }
-        Log.d(TAG, "photoNames[0]: ${photoNames[0]}")
+    fun getLocalPhotos(activity: Activity): ArrayList<Photo> {
+        val uri: Uri
+        val cursor: Cursor?
+        val column_index_data: Int
+//        val column_index_folder_name: Int
+        val column_index_date_taken: Int
+        val listOfAllImages = ArrayList<Photo>()
+//        var absolutePathOfImage: String? = null
+//        var imageId: String? = null
+        uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
-        val api = Api(view.context)
+        val projection = arrayOf(
+                MediaStore.MediaColumns.DATA,
+//                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.Media.DATE_TAKEN
+        )
 
-        val callback = object: Callback<PhotosResult> {
-            override fun onFailure(call: Call<PhotosResult>?, t: Throwable?) {
-                Log.d(TAG, "A problem occurred inside callback for sync()...")
-            }
+        cursor = activity.contentResolver.query(uri, projection, null, null, null)
 
-            override fun onResponse(call: Call<PhotosResult>?, response: Response<PhotosResult>?) {
-                Log.d(TAG, "response?.body()?.count: ${response?.body()?.count}")
+        column_index_data = cursor!!.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+//        column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
+        column_index_date_taken = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN)
 
-                val serverPhotos = response?.body()?.results?.map { it.filename }
+        while (cursor.moveToNext()) {
+            val absolutePathOfImage = cursor.getString(column_index_data)
+            val filename = absolutePathOfImage.split("/").last()
+            val imageId = cursor.getString(column_index_date_taken)
+            Log.d(TAG, "absolutePathOfImage: $absolutePathOfImage")
+            Log.d(TAG, "imageId: $imageId")
+            Log.d(TAG, "filename: $filename")
 
-                // Create a list of file names not on the server.
-                val notOnServer = mutableListOf<List<String>>()
-                for (photo in photoNames.take(30).toList()) {
-                    if (photo[0] !in serverPhotos!!) {
-                        Log.d(TAG, "it[1]: ${photo[1]}")
-                        notOnServer.add(photo)
-                    }
-                }
 
-                // Get the first 30 photos and upload them.
-                for (lP in notOnServer) {
-                    upload(lP)
-                }
+            val dataSource = PhotolandiaDataSource(context)
 
-//                upload(notOnServer[0])
+            // Check if the photo is in the database.
+            var photo: Photo? = null
+            photo = dataSource.getPhoto(absolutePathOfImage)
+//            Log.d(TAG, "Found photo.local_filename: ${photo?.local_filename}")
+            if (photo == null) {
+                photo = Photo(null, null, null, null, filename,
+                        absolutePathOfImage, imageId)
+
+                // Add photo to the database.
+                dataSource.createPhoto(photo)
+                listOfAllImages.add(photo)
             }
 
         }
-        api.getPhotos(callback)
+
+        cursor.close()
+        return listOfAllImages.reversed() as ArrayList<Photo>
     }
 
-    fun upload(photo: List<String>) {
+    private fun sync(view: View) {
+        // Get a list of local photo filenames.
+        // TODO:as get a list of photo names not in the database.
+//        val localPhotos = PhotoAdapter(activity, null, null).getAllShownImagesPath(activity)
+//        val photoNames = localPhotos.map { listOf(it.split('/').last(), it) }
+//        Log.d(TAG, "photoNames.size: ${photoNames.size}")
+        val dataSource = PhotolandiaDataSource(context)
+        val localPhotos = dataSource.getUnuploadedPhotos()
+
+//        val prefs = activity.getSharedPreferences(activity.packageName + "_preferences", 0)
+//        val defaultAlbumId = prefs!!.getString("default_album_id", "")
+//
+//        val api = Api(view.context)
+//
+//        val callback = object: Callback<Album> {
+//            override fun onFailure(call: Call<Album>?, t: Throwable?) {
+//                Log.d(TAG, "A problem occurred inside callback for getAlbum()...")
+//
+//            }
+//
+//            override fun onResponse(call: Call<Album>?, response: Response<Album>?) {
+//                val serverPhotos = response?.body()?.photo_set?.map { it.local_filename }
+//                Log.d(TAG, "serverPhotos.size: ${serverPhotos!!.size}")
+////                Log.d(TAG, "serverPhotos[0]: ${serverPhotos[0]}")
+//
+//                // Create a list of the firest 30 file names not on the server.
+//                val notOnServer = mutableListOf<Photo>()
+//                for (photo in localPhotos.take(5).toList()) {
+//                    if (photo.local_filename !in serverPhotos) {
+//                        Log.d(TAG, "it.local_filename: ${photo.local_filename}")
+//                        notOnServer.add(photo)
+//                    }
+//                }
+//
+//                Log.d(TAG, "notOnServer.size: ${notOnServer.size}")
+//
+//                // Upload the photos.
+//                for (lP in notOnServer) {
+//                    upload(lP)
+//                }
+//
+////                upload(notOnServer[0])
+//            }
+//
+//        }
+//        api.getAlbum(defaultAlbumId.toInt(), callback)
+        for (photo in localPhotos) {
+            upload(photo)
+        }
+    }
+
+    fun upload(photo: Photo) {
         Snackbar.make(view, "Uploading $photo", Snackbar.LENGTH_SHORT).show()
 
         val api = Api(view.context)
 
         try {
-            val file = File(photo[1])
+            val file = File(photo.local_path)
             val fileInputStream = FileInputStream(file)
 
             val img: BufferedSource = Okio.buffer(Okio.source(fileInputStream))
@@ -108,6 +181,11 @@ class LocalPhotosFragment: Fragment() {
 
                 override fun onResponse(call: Call<Photo>?, response: Response<Photo>?) {
                     Log.d(TAG, "response?.body()?.filename: ${response?.body()?.filename}")
+
+                    // TODO:as save server photo data into the database.
+                    val dataSource = PhotolandiaDataSource(context)
+                    val photo = response?.body()
+                    dataSource.updatePhoto(photo!!)
                 }
             }
 
@@ -116,9 +194,12 @@ class LocalPhotosFragment: Fragment() {
 
             api.uploadImage(
                     RequestBody.create(MediaType.parse("text/plain"), albumId),
+                    RequestBody.create(MediaType.parse("text/plain"), photo.local_filename),
+                    RequestBody.create(MediaType.parse("text/plain"), photo.local_path),
+                    RequestBody.create(MediaType.parse("text/plain"), photo.local_id),
                     MultipartBody.Part.createFormData(
                             "image",
-                            photo[0],
+                            photo.local_path,
                             RequestBody.create(MediaType.parse("image/jpeg"), image)),
                     callback
             )
