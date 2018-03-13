@@ -77,23 +77,19 @@ class LocalPhotosFragment: Fragment() {
         val uri: Uri
         val cursor: Cursor?
         val column_index_data: Int
-//        val column_index_folder_name: Int
         val column_index_date_taken: Int
         val listOfAllImages = ArrayList<Photo>()
-//        var absolutePathOfImage: String? = null
-//        var imageId: String? = null
+
         uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
         val projection = arrayOf(
                 MediaStore.MediaColumns.DATA,
-//                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
                 MediaStore.Images.Media.DATE_TAKEN
         )
 
         cursor = activity.contentResolver.query(uri, projection, null, null, null)
 
         column_index_data = cursor!!.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
-//        column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
         column_index_date_taken = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN)
 
         while (cursor.moveToNext()) {
@@ -130,51 +126,10 @@ class LocalPhotosFragment: Fragment() {
     }
 
     private fun sync(view: View) {
-//        val localPhotos = PhotoAdapter(activity, null, null).getAllShownImagesPath(activity)
-//        val photoNames = localPhotos.map { listOf(it.split('/').last(), it) }
-//        Log.d(TAG, "photoNames.size: ${photoNames.size}")
-
         // Get a list of photo names not in the database.
         val dataSource = PhotolandiaDataSource(context)
         val localPhotos = dataSource.getUnuploadedPhotos()
 
-//        val prefs = activity.getSharedPreferences(activity.packageName + "_preferences", 0)
-//        val defaultAlbumId = prefs!!.getString("default_album_id", "")
-//
-//        val api = Api(view.context)
-//
-//        val callback = object: Callback<Album> {
-//            override fun onFailure(call: Call<Album>?, t: Throwable?) {
-//                Log.d(TAG, "A problem occurred inside callback for getAlbum()...")
-//
-//            }
-//
-//            override fun onResponse(call: Call<Album>?, response: Response<Album>?) {
-//                val serverPhotos = response?.body()?.photo_set?.map { it.local_filename }
-//                Log.d(TAG, "serverPhotos.size: ${serverPhotos!!.size}")
-////                Log.d(TAG, "serverPhotos[0]: ${serverPhotos[0]}")
-//
-//                // Create a list of the firest 30 file names not on the server.
-//                val notOnServer = mutableListOf<Photo>()
-//                for (photo in localPhotos.take(5).toList()) {
-//                    if (photo.local_filename !in serverPhotos) {
-//                        Log.d(TAG, "it.local_filename: ${photo.local_filename}")
-//                        notOnServer.add(photo)
-//                    }
-//                }
-//
-//                Log.d(TAG, "notOnServer.size: ${notOnServer.size}")
-//
-//                // Upload the photos.
-//                for (lP in notOnServer) {
-//                    upload(lP)
-//                }
-//
-////                upload(notOnServer[0])
-//            }
-//
-//        }
-//        api.getAlbum(defaultAlbumId.toInt(), callback)
         for (photo in localPhotos) {
             upload(photo)
         }

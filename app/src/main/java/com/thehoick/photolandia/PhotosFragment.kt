@@ -50,9 +50,6 @@ class PhotosFragment: Fragment() {
                 progress.visibility = INVISIBLE
                 message.visibility = INVISIBLE
 
-//                val photos = response?.body()?.results?.map { it.image }
-//                val photoList = response?.body()?.results?.map { listOf(it.id.toString(), it.image)}
-
                 val photos = mutableListOf<Photo>()
                 for (image in response?.body()?.results!!) {
                     // Create a Photo instance for each result returned as JSON.

@@ -20,7 +20,6 @@ class PhotolandiaDataSource(context: Context) {
 
     fun createPhoto(photo: Photo) {
         val db = open()
-//        db.beginTransaction()
 
         // Implementation details... maybe don't need to use transactions for simple inserts.
         Log.d(TAG, "createPhoto photo.local_path: ${photo.local_path}")
@@ -34,8 +33,6 @@ class PhotolandiaDataSource(context: Context) {
 
         val photoId = db.insert("photos", null, photoValues)
 
-//        db.setTransactionSuccessful()
-//        db.endTransaction()
         close(db)
     }
 
@@ -64,8 +61,6 @@ class PhotolandiaDataSource(context: Context) {
                         cursor.getString(cursor.getColumnIndex("local_filename")),
                         cursor.getString(cursor.getColumnIndex("local_path")),
                         cursor.getString(cursor.getColumnIndex("local_id"))
-//                        Date(cursor.getString(cursor.getColumnIndex("created_at"))),
-//                        Date(cursor.getString(cursor.getColumnIndex("updated_at")))
                 )
             } while (cursor.moveToNext())
         }

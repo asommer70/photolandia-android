@@ -26,11 +26,7 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
     var selectedPhotos = mutableListOf<Photo>()
 
     init {
-//        if (photos == null) {
-//            images = getLocalPhotos(context)
-//        } else {
-            images = photos
-//        }
+        images = photos
     }
 
     override fun getCount(): Int {
@@ -114,57 +110,4 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
 
         return picturesView
     }
-
-//    fun getLocalPhotos(activity: Activity): ArrayList<Photo> {
-//        val uri: Uri
-//        val cursor: Cursor?
-//        val column_index_data: Int
-////        val column_index_folder_name: Int
-//        val column_index_date_taken: Int
-//        val listOfAllImages = ArrayList<Photo>()
-////        var absolutePathOfImage: String? = null
-////        var imageId: String? = null
-//        uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-//
-//        val projection = arrayOf(
-//                MediaStore.MediaColumns.DATA,
-////                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-//                MediaStore.Images.Media.DATE_TAKEN
-//        )
-//
-//        cursor = activity.contentResolver.query(uri, projection, null, null, null)
-//
-//        column_index_data = cursor!!.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
-////        column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
-//        column_index_date_taken = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN)
-//
-//        while (cursor.moveToNext()) {
-//            val absolutePathOfImage = cursor.getString(column_index_data)
-//            val filename = absolutePathOfImage.split("/").last()
-//            val imageId = cursor.getString(column_index_date_taken)
-//            Log.d(TAG, "absolutePathOfImage: $absolutePathOfImage")
-//            Log.d(TAG, "imageId: $imageId")
-//            Log.d(TAG, "filename: $filename")
-//
-//
-//            val dataSource = PhotolandiaDataSource(context)
-//
-//            // Check if the photo is in the database.
-//            var photo: Photo? = null
-//            photo = dataSource.getPhoto(absolutePathOfImage)
-////            Log.d(TAG, "Found photo.local_filename: ${photo?.local_filename}")
-//            if (photo == null) {
-//                photo = Photo(null, null, null, null, filename,
-//                        absolutePathOfImage, imageId)
-//
-//                // Add photo to the database.
-//                dataSource.createPhoto(photo)
-//                listOfAllImages.add(photo)
-//            }
-//
-//        }
-//
-//        cursor.close()
-//        return listOfAllImages.reversed() as ArrayList<Photo>
-//    }
 }
