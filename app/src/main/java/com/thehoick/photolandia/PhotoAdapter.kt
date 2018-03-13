@@ -20,16 +20,16 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class PhotoAdapter(private val context: Activity, val photoObjs: List<Photo>?, val photos: List<String>?, val photoList: List<List<String>>?) : BaseAdapter() {
+class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val serverPhotos: Boolean = false) : BaseAdapter() {
     val TAG = PhotoAdapter::class.java.simpleName
-    var images: ArrayList<Photo>? = null
-    var selectedPhotos = mutableListOf<List<String>>()
+    var images: List<Photo>? = null
+    var selectedPhotos = mutableListOf<Photo>()
 
     init {
 //        if (photos == null) {
 //            images = getLocalPhotos(context)
 //        } else {
-            images = photos as ArrayList<Photo>
+            images = photos
 //        }
     }
 
@@ -63,10 +63,9 @@ class PhotoAdapter(private val context: Activity, val photoObjs: List<Photo>?, v
             fragmentTransaction.commit()
         }
 
-        if (photoList != null) {
+        if (serverPhotos) {
             picturesView.setOnLongClickListener {
-                val photo = photoList[position]
-                Log.d(TAG, "Long click photo: $photo")
+                val photo = images!![position]
                 it.setPadding(4, 2,4 , 2)
                 it.setBackgroundColor(Color.BLACK)
                 this.selectedPhotos.add(photo)
@@ -76,7 +75,7 @@ class PhotoAdapter(private val context: Activity, val photoObjs: List<Photo>?, v
             val syncButton = context.findViewById<FloatingActionButton>(R.id.sync)
             syncButton.setImageDrawable(context.getDrawable(R.drawable.ic_add_album_icon))
             syncButton.setOnClickListener {
-                val ids = selectedPhotos.map { it[0] }
+                val ids = selectedPhotos.map { it.id }
                 val idsString = ids.joinToString( ",")
 
                 Log.d(TAG, "idsString: ${idsString}")

@@ -64,8 +64,11 @@ class MainActivity : AppCompatActivity() {
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
                 } else {
-                    val photos = this.findViewById(R.id.photos) as GridView
-                    photos.adapter = PhotoAdapter(this, null, null);
+                    // TODO:as build the initial list of local Photos and save them to the database.
+
+                    localPhotosFragment()
+//                    val photos = this.findViewById(R.id.photos) as GridView
+//                    photos.adapter = PhotoAdapter(this, null, null);
                 }
             }
         }

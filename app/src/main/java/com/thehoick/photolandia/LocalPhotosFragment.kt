@@ -36,8 +36,9 @@ class LocalPhotosFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
 
+        // TODO:as check if all photos have been uploaded and if so set the message and don't create a photo grid.
         val photos = view.findViewById(R.id.photos) as GridView
-        photos.adapter = PhotoAdapter(activity, getLocalPhotos(activity), null)
+        photos.adapter = PhotoAdapter(activity, getLocalPhotos(activity), false)
 
         val syncButton = activity.findViewById<FloatingActionButton>(R.id.sync)
         syncButton.setImageDrawable(view.context.getDrawable(android.R.drawable.ic_popup_sync))
@@ -112,11 +113,11 @@ class LocalPhotosFragment: Fragment() {
     }
 
     private fun sync(view: View) {
-        // Get a list of local photo filenames.
-        // TODO:as get a list of photo names not in the database.
 //        val localPhotos = PhotoAdapter(activity, null, null).getAllShownImagesPath(activity)
 //        val photoNames = localPhotos.map { listOf(it.split('/').last(), it) }
 //        Log.d(TAG, "photoNames.size: ${photoNames.size}")
+
+        // Get a list of photo names not in the database.
         val dataSource = PhotolandiaDataSource(context)
         val localPhotos = dataSource.getUnuploadedPhotos()
 
@@ -182,7 +183,7 @@ class LocalPhotosFragment: Fragment() {
                 override fun onResponse(call: Call<Photo>?, response: Response<Photo>?) {
                     Log.d(TAG, "response?.body()?.filename: ${response?.body()?.filename}")
 
-                    // TODO:as save server photo data into the database.
+                    // Save server photo data into the database.
                     val dataSource = PhotolandiaDataSource(context)
                     val photo = response?.body()
                     dataSource.updatePhoto(photo!!)
