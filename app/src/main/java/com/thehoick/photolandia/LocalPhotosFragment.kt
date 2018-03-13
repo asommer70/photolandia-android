@@ -10,10 +10,14 @@ import android.provider.MediaStore
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.GridView
+import android.widget.TextView
 import android.widget.Toast
 import com.thehoick.photolandia.database.PhotolandiaDataSource
 import com.thehoick.photolandia.models.Photo
@@ -36,9 +40,19 @@ class LocalPhotosFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
 
-        // TODO:as check if all photos have been uploaded and if so set the message and don't create a photo grid.
         val photos = view.findViewById(R.id.photos) as GridView
-        photos.adapter = PhotoAdapter(activity, getLocalPhotos(activity), false)
+
+        // TODO:as check if all photos have been uploaded and if so set the message and don't create a photo grid.
+        val images = getLocalPhotos(activity)
+        if (images!!.isNotEmpty()) {
+            photos.adapter = PhotoAdapter(activity, images, false)
+        } else {
+            photos.visibility = INVISIBLE
+            val message = view.findViewById<TextView>(R.id.message)
+            message.setText(getString(R.string.all_photos_uploaded))
+            message.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24f)
+            message.visibility = VISIBLE
+        }
 
         val syncButton = activity.findViewById<FloatingActionButton>(R.id.sync)
         syncButton.setImageDrawable(view.context.getDrawable(android.R.drawable.ic_popup_sync))
@@ -59,7 +73,7 @@ class LocalPhotosFragment: Fragment() {
         return view
     }
 
-    fun getLocalPhotos(activity: Activity): ArrayList<Photo> {
+    fun getLocalPhotos(activity: Activity): ArrayList<Photo>? {
         val uri: Uri
         val cursor: Cursor?
         val column_index_data: Int
@@ -96,7 +110,6 @@ class LocalPhotosFragment: Fragment() {
             // Check if the photo is in the database.
             var photo: Photo? = null
             photo = dataSource.getPhoto(absolutePathOfImage)
-//            Log.d(TAG, "Found photo.local_filename: ${photo?.local_filename}")
             if (photo == null) {
                 photo = Photo(null, null, null, null, filename,
                         absolutePathOfImage, imageId)
@@ -109,7 +122,11 @@ class LocalPhotosFragment: Fragment() {
         }
 
         cursor.close()
-        return listOfAllImages.reversed() as ArrayList<Photo>
+        if (listOfAllImages.isNotEmpty()) {
+            return listOfAllImages.reversed() as ArrayList<Photo>
+        } else {
+            return listOfAllImages
+        }
     }
 
     private fun sync(view: View) {
