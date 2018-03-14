@@ -1,19 +1,17 @@
 package com.thehoick.photolandia
 
 import android.app.Activity
-import android.database.Cursor
 import android.graphics.Color
-import android.net.Uri
-import android.provider.MediaStore
-import android.view.View
-import android.view.ViewGroup
-import com.bumptech.glide.Glide
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.util.Log
-import android.widget.*
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.ImageView.ScaleType.FIT_CENTER
-import com.thehoick.photolandia.database.PhotolandiaDataSource
+import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.thehoick.photolandia.models.Photo
 import retrofit2.Call
 import retrofit2.Callback
@@ -51,7 +49,11 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
 
             val photoFragment = PhotoFragment()
             val data = Bundle()
-            data.putString("photo", photo.local_path)
+            if (serverPhotos) {
+                data.putString("photo", photo.image)
+            } else {
+                data.putString("photo", photo.local_path)
+            }
             photoFragment.arguments = data
             val fragmentTransaction = this.context.fragmentManager.beginTransaction()
             fragmentTransaction.replace(R.id.container, photoFragment)
@@ -106,7 +108,11 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
             }
         }
 
-        Glide.with(context).load(images!![position].local_path).into(picturesView)
+        if (serverPhotos) {
+            Glide.with(context).load(images!![position].image).into(picturesView)
+        } else {
+            Glide.with(context).load(images!![position].local_path).into(picturesView)
+        }
 
         return picturesView
     }

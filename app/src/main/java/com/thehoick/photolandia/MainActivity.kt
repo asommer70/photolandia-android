@@ -13,7 +13,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.GridView
 import com.thehoick.photolandia.R.layout
 import kotlinx.android.synthetic.main.activity_main.*
 

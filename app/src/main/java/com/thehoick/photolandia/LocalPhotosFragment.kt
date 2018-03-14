@@ -3,7 +3,6 @@ package com.thehoick.photolandia
 import android.app.Activity
 import android.app.Fragment
 import android.database.Cursor
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -17,6 +16,7 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.GridView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.thehoick.photolandia.database.PhotolandiaDataSource
@@ -32,7 +32,6 @@ import retrofit2.Response
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
-import java.text.SimpleDateFormat
 
 class LocalPhotosFragment: Fragment() {
     val TAG = LocalPhotosFragment::class.java.simpleName
@@ -40,18 +39,22 @@ class LocalPhotosFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
 
+        val progress = view.findViewById<ProgressBar>(R.id.progress)
+        progress.visibility = VISIBLE
         val photos = view.findViewById(R.id.photos) as GridView
 
-        // TODO:as check if all photos have been uploaded and if so set the message and don't create a photo grid.
+        // Check if all photos have been uploaded and if so set the message and don't create a photo grid.
         val images = getLocalPhotos(activity)
         if (images!!.isNotEmpty()) {
             photos.adapter = PhotoAdapter(activity, images, false)
+            progress.visibility = INVISIBLE
         } else {
             photos.visibility = INVISIBLE
             val message = view.findViewById<TextView>(R.id.message)
             message.setText(getString(R.string.all_photos_uploaded))
             message.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24f)
             message.visibility = VISIBLE
+            progress.visibility = INVISIBLE
         }
 
         val syncButton = activity.findViewById<FloatingActionButton>(R.id.sync)
@@ -96,10 +99,10 @@ class LocalPhotosFragment: Fragment() {
             val absolutePathOfImage = cursor.getString(column_index_data)
             val filename = absolutePathOfImage.split("/").last()
             val imageId = cursor.getString(column_index_date_taken)
+
             Log.d(TAG, "absolutePathOfImage: $absolutePathOfImage")
             Log.d(TAG, "imageId: $imageId")
             Log.d(TAG, "filename: $filename")
-
 
             val dataSource = PhotolandiaDataSource(context)
 
@@ -114,12 +117,17 @@ class LocalPhotosFragment: Fragment() {
                 dataSource.createPhoto(photo)
                 listOfAllImages.add(photo)
             }
+            Log.d(TAG, "photo.id: ${photo.image}")
+            if (photo.image != null) {
+                listOfAllImages.add(photo)
+            }
 
         }
 
         cursor.close()
         if (listOfAllImages.isNotEmpty()) {
-            return listOfAllImages.reversed() as ArrayList<Photo>
+            // TODO:as find a reasonable number of unuploaded photos to put in the list.
+            return listOfAllImages.take(20).reversed() as ArrayList<Photo>
         } else {
             return listOfAllImages
         }
@@ -136,8 +144,6 @@ class LocalPhotosFragment: Fragment() {
     }
 
     fun upload(photo: Photo) {
-        Snackbar.make(view, "Uploading $photo", Snackbar.LENGTH_SHORT).show()
-
         val api = Api(view.context)
 
         try {
@@ -146,6 +152,8 @@ class LocalPhotosFragment: Fragment() {
 
             val img: BufferedSource = Okio.buffer(Okio.source(fileInputStream))
             val image = img.readByteArray()
+            fileInputStream.close()
+            img.close()
 
             val callback = object: Callback<Photo> {
                 override fun onFailure(call: Call<Photo>?, t: Throwable?) {
@@ -157,8 +165,13 @@ class LocalPhotosFragment: Fragment() {
 
                     // Save server photo data into the database.
                     val dataSource = PhotolandiaDataSource(context)
-                    val photo = response?.body()
-                    dataSource.updatePhoto(photo!!)
+                    val uploadedPhoto = response?.body()
+                    if (response?.body()?.filename != null) {
+                        dataSource.updatePhoto(uploadedPhoto!!)
+                        Snackbar.make(view, "Uploaded ${uploadedPhoto.local_filename}", Snackbar.LENGTH_SHORT).show()
+                    } else {
+                        Snackbar.make(view, "Problem with ${photo.local_filename}", Snackbar.LENGTH_SHORT).show()
+                    }
                 }
             }
 

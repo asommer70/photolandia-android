@@ -66,7 +66,7 @@ class PhotosFragment: Fragment() {
                 }
 
                 val photosView = context.findViewById(R.id.photos) as GridView
-                photosView.adapter = PhotoAdapter(activity, photos, false)
+                photosView.adapter = PhotoAdapter(activity, photos, true)
             }
 
         }
