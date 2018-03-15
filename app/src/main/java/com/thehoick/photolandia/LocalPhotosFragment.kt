@@ -5,6 +5,7 @@ import android.app.Fragment
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
@@ -90,7 +91,19 @@ class LocalPhotosFragment: Fragment() {
                 MediaStore.Images.Media.DATE_TAKEN
         )
 
-        cursor = activity.contentResolver.query(uri, projection, null, null, null)
+
+        // Get only camera photos.
+        val CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera"
+        val CAMERA_IMAGE_BUCKET_ID = CAMERA_IMAGE_BUCKET_NAME.toLowerCase().hashCode().toString()
+        val selectionArgs = arrayOf(CAMERA_IMAGE_BUCKET_ID)
+
+        cursor = activity.contentResolver.query(
+                uri,
+                projection,
+                MediaStore.Images.Media.BUCKET_ID + " = ?",
+                selectionArgs,
+                null
+        )
 
         column_index_data = cursor!!.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
         column_index_date_taken = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN)
