@@ -10,4 +10,5 @@
     <string name="please_login">Please login...</string>
     <string name="bad_username_or_password">Bad username or password.</string>
     <string name="all_photos_uploaded">All photos have been uploaded...</string>
+    <string name="photos_uploaded_check_for_more">Photos uploaded... click the action button to check for more.</string>
 </resources>

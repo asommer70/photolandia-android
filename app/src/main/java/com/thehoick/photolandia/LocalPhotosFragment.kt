@@ -22,6 +22,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.thehoick.photolandia.database.PhotolandiaDataSource
 import com.thehoick.photolandia.models.Photo
+import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -36,6 +37,10 @@ import java.io.IOException
 
 class LocalPhotosFragment: Fragment() {
     val TAG = LocalPhotosFragment::class.java.simpleName
+    var photosAdapter: PhotoAdapter? = null
+    var syncButton: FloatingActionButton? = null
+    var message: TextView? = null
+
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
@@ -47,20 +52,27 @@ class LocalPhotosFragment: Fragment() {
         // Check if all photos have been uploaded and if so set the message and don't create a photo grid.
         val images = getLocalPhotos(activity)
         if (images!!.isNotEmpty()) {
-            photos.adapter = PhotoAdapter(activity, images, false)
+            photosAdapter = PhotoAdapter(activity, images, false)
+            photos.adapter = photosAdapter
             progress.visibility = INVISIBLE
         } else {
             photos.visibility = INVISIBLE
-            val message = view.findViewById<TextView>(R.id.message)
-            message.setText(getString(R.string.all_photos_uploaded))
-            message.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24f)
-            message.visibility = VISIBLE
+            message = view.findViewById<TextView>(R.id.message)
+            message?.setText(getString(R.string.all_photos_uploaded))
+            message?.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24f)
+            message?.visibility = VISIBLE
             progress.visibility = INVISIBLE
         }
 
-        val syncButton = activity.findViewById<FloatingActionButton>(R.id.sync)
-        syncButton.setImageDrawable(view.context.getDrawable(android.R.drawable.ic_popup_sync))
-        syncButton.setOnClickListener {
+        syncButton = activity.findViewById<FloatingActionButton>(R.id.sync)
+        setSyncButtonToSync()
+
+        return view
+    }
+
+    fun setSyncButtonToSync() {
+        syncButton?.setImageDrawable(context.getDrawable(android.R.drawable.ic_menu_upload))
+        syncButton?.setOnClickListener {
             val prefs = activity.getSharedPreferences(activity.packageName + "_preferences", 0)
             val defaultAlbumId = prefs!!.getString("default_album_id", null)
             if (defaultAlbumId.isNullOrEmpty()) {
@@ -70,11 +82,15 @@ class LocalPhotosFragment: Fragment() {
                         .replace(android.R.id.content, Settings())
                         .commit()
             } else {
-                sync(view)
+                // Get a list of photo names not in the database.
+                val dataSource = PhotolandiaDataSource(context)
+                val localPhotos = dataSource.getUnuploadedPhotos()
+
+                for (photo in localPhotos) {
+                    upload(photo)
+                }
             }
         }
-
-        return view
     }
 
     fun getLocalPhotos(activity: Activity): ArrayList<Photo>? {
@@ -83,6 +99,7 @@ class LocalPhotosFragment: Fragment() {
         val column_index_data: Int
         val column_index_date_taken: Int
         val listOfAllImages = ArrayList<Photo>()
+        val dataSource = PhotolandiaDataSource(context)
 
         uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
@@ -117,8 +134,6 @@ class LocalPhotosFragment: Fragment() {
             Log.d(TAG, "imageId: $imageId")
             Log.d(TAG, "filename: $filename")
 
-            val dataSource = PhotolandiaDataSource(context)
-
             // Check if the photo is in the database.
             var photo: Photo? = null
             photo = dataSource.getPhoto(absolutePathOfImage)
@@ -130,34 +145,27 @@ class LocalPhotosFragment: Fragment() {
                 dataSource.createPhoto(photo)
                 listOfAllImages.add(photo)
             }
+
             Log.d(TAG, "photo.id: ${photo.image}")
             if (photo.image != null) {
                 listOfAllImages.add(photo)
             }
 
+            // Only get un-uploaded Photos.
+            return dataSource.getUnuploadedPhotos() as ArrayList<Photo>
         }
 
         cursor.close()
         if (listOfAllImages.isNotEmpty()) {
-            // TODO:as find a reasonable number of unuploaded photos to put in the list.
+            // Reasonable number of unuploaded photos to put in the list.
             return listOfAllImages.take(20).reversed() as ArrayList<Photo>
         } else {
             return listOfAllImages
         }
     }
 
-    private fun sync(view: View) {
-        // Get a list of photo names not in the database.
-        val dataSource = PhotolandiaDataSource(context)
-        val localPhotos = dataSource.getUnuploadedPhotos()
-
-        for (photo in localPhotos) {
-            upload(photo)
-        }
-    }
-
     fun upload(photo: Photo) {
-        val api = Api(view.context)
+        val api = Api(context)
 
         try {
             val file = File(photo.local_path)
@@ -176,12 +184,27 @@ class LocalPhotosFragment: Fragment() {
                 override fun onResponse(call: Call<Photo>?, response: Response<Photo>?) {
                     Log.d(TAG, "response?.body()?.filename: ${response?.body()?.filename}")
 
-                    // Save server photo data into the database.
-                    val dataSource = PhotolandiaDataSource(context)
                     val uploadedPhoto = response?.body()
                     if (response?.body()?.filename != null) {
+                        // Save server photo data into the database.
+                        val dataSource = PhotolandiaDataSource(context)
                         dataSource.updatePhoto(uploadedPhoto!!)
-                        Snackbar.make(view, "Uploaded ${uploadedPhoto.local_filename}", Snackbar.LENGTH_SHORT).show()
+
+                        photosAdapter!!.images = photosAdapter!!.images!!.filter { it.local_path != uploadedPhoto.local_path }
+                        photosAdapter!!.notifyDataSetChanged()
+
+                        message?.setText(getString(R.string.photos_uploaded_check_for_more))
+                        message?.visibility = VISIBLE
+
+                        syncButton?.setImageDrawable(view.context.getDrawable(android.R.drawable.ic_popup_sync))
+                        syncButton?.setOnClickListener {
+                            getLocalPhotos(activity)
+                            photosAdapter?.images = getLocalPhotos(activity)
+                            photosAdapter?.notifyDataSetChanged()
+                            setSyncButtonToSync()
+                        }
+
+//                        Snackbar.make(view, "Uploaded ${uploadedPhoto.local_filename}", Snackbar.LENGTH_SHORT).show()
                     } else {
                         Snackbar.make(view, "Problem with ${photo.local_filename}", Snackbar.LENGTH_SHORT).show()
                     }
