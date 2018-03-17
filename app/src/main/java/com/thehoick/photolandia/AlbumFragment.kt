@@ -32,8 +32,6 @@ class AlbumFragment: Fragment() {
         val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
         bottomNav.visibility = View.VISIBLE
 
-        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
         super.onResume()
     }
 

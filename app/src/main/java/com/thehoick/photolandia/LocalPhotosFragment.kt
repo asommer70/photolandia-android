@@ -17,6 +17,7 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.GridView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -48,8 +49,6 @@ class LocalPhotosFragment: Fragment() {
         val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
         bottomNav.visibility = View.VISIBLE
 
-        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
         super.onResume()
     }
 
