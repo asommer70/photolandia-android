@@ -21,7 +21,7 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
     val TAG = AlbumPhotoAdapter::class.java.simpleName
     var images: Array<Photo>? = null
     var selectedPhotos = mutableListOf<List<String?>>()
-    val syncButton = context.findViewById<FloatingActionButton>(R.id.sync)
+    val syncButton = context.findViewById<FloatingActionButton>(R.id.fab)
 
     init {
         this.images = images

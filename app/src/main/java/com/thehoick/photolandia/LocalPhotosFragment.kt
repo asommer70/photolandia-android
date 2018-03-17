@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.util.Log
@@ -22,7 +23,6 @@ import android.widget.TextView
 import android.widget.Toast
 import com.thehoick.photolandia.database.PhotolandiaDataSource
 import com.thehoick.photolandia.models.Photo
-import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -41,6 +41,17 @@ class LocalPhotosFragment: Fragment() {
     var syncButton: FloatingActionButton? = null
     var message: TextView? = null
 
+    override fun onResume() {
+        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
+        fab.show()
+
+        val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
+        bottomNav.visibility = View.VISIBLE
+
+        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        super.onResume()
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
@@ -64,7 +75,7 @@ class LocalPhotosFragment: Fragment() {
             progress.visibility = INVISIBLE
         }
 
-        syncButton = activity.findViewById<FloatingActionButton>(R.id.sync)
+        syncButton = activity.findViewById<FloatingActionButton>(R.id.fab)
         setSyncButtonToSync()
 
         return view

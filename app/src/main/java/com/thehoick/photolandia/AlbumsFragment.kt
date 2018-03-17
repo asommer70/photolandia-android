@@ -4,6 +4,7 @@ import android.app.Fragment
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,6 +25,19 @@ class AlbumsFragment: Fragment() {
     val TAG = AlbumsFragment::class.java.simpleName
     var AlbumFragmentAdapter: AlbumAdapter? = null
         get() = field
+
+    override fun onResume() {
+        Log.d(TAG, "onResume()...")
+        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
+        fab.show()
+
+        val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
+        bottomNav.visibility = View.VISIBLE
+
+        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        super.onResume()
+    }
 
     fun getAlbums(view: View) {
         val api = Api(context)
@@ -69,7 +83,7 @@ class AlbumsFragment: Fragment() {
         super.onCreate(savedInstanceState)
 
         Log.d(TAG, "AlbumsFragment.onCreate()...")
-        val syncButton = activity.findViewById<FloatingActionButton>(R.id.sync)
+        val syncButton = activity.findViewById<FloatingActionButton>(R.id.fab)
         syncButton.setImageDrawable(context.getDrawable(android.R.drawable.ic_input_add))
         syncButton.setOnClickListener {
             // Input DialogFragment.

@@ -3,8 +3,10 @@ package com.thehoick.photolandia
 import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -16,6 +18,9 @@ import com.thehoick.photolandia.models.Photo
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.view.KeyEvent.KEYCODE_BACK
+
+
 
 
 class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val serverPhotos: Boolean = false) : BaseAdapter() {
@@ -57,8 +62,9 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
                 data.putBoolean("local", true)
             }
             photoFragment.arguments = data
+
             val fragmentTransaction = this.context.fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.container, photoFragment)
+            fragmentTransaction.replace(R.id.container, photoFragment, "photo_fragment")
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
         }
@@ -72,7 +78,7 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
                 true
             }
 
-            val syncButton = context.findViewById<FloatingActionButton>(R.id.sync)
+            val syncButton = context.findViewById<FloatingActionButton>(R.id.fab)
             syncButton.setImageDrawable(context.getDrawable(R.drawable.ic_add_album_icon))
             syncButton.setOnClickListener {
                 val ids = selectedPhotos.map { it.id }

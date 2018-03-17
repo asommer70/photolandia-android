@@ -3,6 +3,8 @@ package com.thehoick.photolandia
 import android.app.Fragment
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
+import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +26,19 @@ class PhotosFragment: Fragment() {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
         getServerPhotos(view)
         return view
+    }
+
+    override fun onResume() {
+        Log.d(TAG, "onResume()...")
+        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
+        fab.show()
+
+        val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
+        bottomNav.visibility = View.VISIBLE
+
+        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        super.onResume()
     }
 
     private fun getServerPhotos(context: View) {

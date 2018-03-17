@@ -1,15 +1,20 @@
 package com.thehoick.photolandia
 
+import android.app.Activity
 import android.app.Fragment
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
+import android.support.design.widget.FloatingActionButton
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import com.github.piasy.biv.BigImageViewer
 import com.github.piasy.biv.loader.ImageLoader
 import com.github.piasy.biv.loader.glide.GlideImageLoader
@@ -35,7 +40,9 @@ class PhotoFragment: Fragment() {
 //        val photoProgress = ProgressBar(activity, null, android.R.attr.progressBarStyleSmall)
 
 
-//        val photoLayout = view.findViewById<LinearLayout>(R.id.photoLayout)
+        val photoLayout = view.findViewById<RelativeLayout>(R.id.photoLayout)
+
+        setFullscreen()
 
 //        photoLayout.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 //                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -44,7 +51,7 @@ class PhotoFragment: Fragment() {
 ////                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
 //                or View.SYSTEM_UI_FLAG_IMMERSIVE)
 
-        activity.window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN == View.SYSTEM_UI_FLAG_FULLSCREEN
+//        imageView!!.systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN == View.SYSTEM_UI_FLAG_FULLSCREEN
 
 //        imageView!!.systemUiVisibility = (
 //            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -90,7 +97,51 @@ class PhotoFragment: Fragment() {
 
 //        imageView?.setProgressIndicator(ProgressPieIndicator())
         imageView?.setImageLoaderCallback(imageLoaderCallback);
+//
+//        view.setOnKeyListener(object : View.OnKeyListener {
+//            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
+//                return if (keyCode == KeyEvent.KEYCODE_BACK) {
+//
+//                    unsetFullscreen()
+//                    return true
+//                } else false
+//            }
+//        })
+
         return view
     }
 
+    fun setFullscreen() {
+        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
+        fab.hide()
+
+        val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
+        bottomNav.visibility = INVISIBLE
+
+        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LOW_PROFILE or
+                View.SYSTEM_UI_FLAG_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_IMMERSIVE
+    }
+
+    fun unsetFullscreen() {
+        Log.d(TAG, "unsetFullscreen()...")
+        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
+        fab.show()
+
+        val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
+        bottomNav.visibility = View.VISIBLE
+
+        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+//                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+//                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+//                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+//                View.SYSTEM_UI_FLAG_LOW_PROFILE or
+//                View.SYSTEM_UI_FLAG_FULLSCREEN or
+//                View.SYSTEM_UI_FLAG_IMMERSIVE
+    }
 }
