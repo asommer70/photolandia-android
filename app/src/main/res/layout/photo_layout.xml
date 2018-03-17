@@ -1,28 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/photoLayout">
 
-    <ScrollView
+    <!--<com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView-->
+        <!--android:id="@+id/photo"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:visibility="invisible" />-->
+
+    <!--<ProgressBar-->
+        <!--android:id="@+id/photoProgress"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="345dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:visibility="invisible" />-->
+
+    <com.github.piasy.biv.view.BigImageView
+        android:id="@+id/photo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:failureImage="@drawable/ic_broken_heart_icon"
+        app:failureImageInitScaleType="center"
+        app:optimizeDisplay="true" >
+    </com.github.piasy.biv.view.BigImageView>
 
-        <LinearLayout
-            android:id="@+id/photoContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_vertical">
+    <ProgressBar
+        android:id="@+id/photoProgress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="invisible"/>
 
-            <ImageView
-                android:id="@+id/photo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"/>
 
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+    <!--<LinearLayout-->
+            <!--android:id="@+id/photoContainer"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_gravity="center_vertical">-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/photo"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:adjustViewBounds="true"-->
+                <!--android:scaleType="fitCenter"/>-->
+
+        <!--</LinearLayout>-->
+
+</RelativeLayout>

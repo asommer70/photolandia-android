@@ -51,8 +51,10 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
             val data = Bundle()
             if (serverPhotos) {
                 data.putString("photo", photo.image)
+                data.putBoolean("local", false)
             } else {
                 data.putString("photo", photo.local_path)
+                data.putBoolean("local", true)
             }
             photoFragment.arguments = data
             val fragmentTransaction = this.context.fragmentManager.beginTransaction()
