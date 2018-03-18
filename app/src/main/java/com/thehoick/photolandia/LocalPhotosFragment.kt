@@ -61,6 +61,7 @@ class LocalPhotosFragment: Fragment() {
 
         // Check if all photos have been uploaded and if so set the message and don't create a photo grid.
         val images = getLocalPhotos(activity)
+        Log.d(TAG, "images.size: ${images?.size}")
         if (images!!.isNotEmpty()) {
             photosAdapter = PhotoAdapter(activity, images, false)
             photos.adapter = photosAdapter
@@ -123,6 +124,7 @@ class LocalPhotosFragment: Fragment() {
         val CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera"
         val CAMERA_IMAGE_BUCKET_ID = CAMERA_IMAGE_BUCKET_NAME.toLowerCase().hashCode().toString()
         val selectionArgs = arrayOf(CAMERA_IMAGE_BUCKET_ID)
+        Log.d(TAG, "CAMERA_IMAGE_BUBCKET_ID: $CAMERA_IMAGE_BUCKET_ID, CAMERA_IMAGE_BUCKET_NAME: $CAMERA_IMAGE_BUCKET_NAME")
 
         cursor = activity.contentResolver.query(
                 uri,
@@ -131,6 +133,8 @@ class LocalPhotosFragment: Fragment() {
                 selectionArgs,
                 null
         )
+
+        Log.d(TAG, "cursor.count: ${cursor.count}")
 
         column_index_data = cursor!!.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
         column_index_date_taken = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN)
@@ -156,21 +160,20 @@ class LocalPhotosFragment: Fragment() {
                 listOfAllImages.add(photo)
             }
 
-            Log.d(TAG, "photo.id: ${photo.image}")
-            if (photo.image != null) {
+            Log.d(TAG, "photo.image: ${photo.image}")
+            if (photo.image == null) {
                 listOfAllImages.add(photo)
             }
-
-            // Only get un-uploaded Photos.
-            return dataSource.getUnuploadedPhotos() as ArrayList<Photo>
         }
 
         cursor.close()
+        Log.d(TAG, "listOfAllImages.size: ${listOfAllImages.size}")
         if (listOfAllImages.isNotEmpty()) {
             // Reasonable number of unuploaded photos to put in the list.
             return listOfAllImages.take(20).reversed() as ArrayList<Photo>
         } else {
-            return listOfAllImages
+            // Only get un-uploaded Photos.
+            return dataSource.getUnuploadedPhotos() as ArrayList<Photo>
         }
     }
 

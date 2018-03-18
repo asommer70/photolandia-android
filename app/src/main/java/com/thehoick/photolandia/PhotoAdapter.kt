@@ -2,6 +2,7 @@ package com.thehoick.photolandia
 
 import android.app.Activity
 import android.graphics.Color
+import android.media.Image
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
@@ -19,6 +20,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.view.KeyEvent.KEYCODE_BACK
+import android.widget.GridView
+import android.widget.ImageView.ScaleType.FIT_START
+import android.widget.LinearLayout
+
+
+
+
 
 
 
@@ -45,9 +53,10 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-
         val picturesView = ImageView(context)
-        picturesView.scaleType = FIT_CENTER
+        val layoutParams = LinearLayout.LayoutParams(350, 300)
+        picturesView.setLayoutParams(layoutParams)
+        picturesView.setBackgroundColor(Color.BLACK)
 
         picturesView.setOnClickListener {
             val photo = images!![position]
@@ -73,7 +82,7 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
             picturesView.setOnLongClickListener {
                 val photo = images!![position]
                 it.setPadding(4, 2,4 , 2)
-                it.setBackgroundColor(Color.BLACK)
+                it.setBackgroundColor(Color.MAGENTA)
                 this.selectedPhotos.add(photo)
                 true
             }

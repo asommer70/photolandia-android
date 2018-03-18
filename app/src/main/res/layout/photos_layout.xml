@@ -5,6 +5,10 @@
     android:layout_height="match_parent"
     android:id="@+id/placeholder">
 
-
+    <ImageView
+        android:id="@+id/phoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter" />
 
 </FrameLayout>
