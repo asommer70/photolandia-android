@@ -23,6 +23,9 @@ import android.view.KeyEvent.KEYCODE_BACK
 import android.widget.GridView
 import android.widget.ImageView.ScaleType.FIT_START
 import android.widget.LinearLayout
+import android.support.v7.widget.GridLayoutManager
+
+
 
 
 
@@ -54,7 +57,8 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val picturesView = ImageView(context)
-        val layoutParams = LinearLayout.LayoutParams(350, 300)
+        val layoutParams = LinearLayout.LayoutParams(520, 500)
+        val grid =
         picturesView.setLayoutParams(layoutParams)
         picturesView.setBackgroundColor(Color.BLACK)
 
