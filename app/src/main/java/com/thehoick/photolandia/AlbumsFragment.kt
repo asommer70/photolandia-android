@@ -12,10 +12,7 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.GridView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,9 +78,9 @@ class AlbumsFragment: Fragment() {
         super.onCreate(savedInstanceState)
 
         Log.d(TAG, "AlbumsFragment.onCreate()...")
-        val syncButton = activity.findViewById<FloatingActionButton>(R.id.fab)
-        syncButton.setImageDrawable(context.getDrawable(android.R.drawable.ic_input_add))
-        syncButton.setOnClickListener {
+        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
+        fab.setImageDrawable(context.getDrawable(android.R.drawable.ic_input_add))
+        fab.setOnClickListener {
             // Input DialogFragment.
             Log.d(TAG, "Creating album...")
             val bundle = Bundle()

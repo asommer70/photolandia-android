@@ -27,6 +27,7 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var row = convertView
         var holder = ViewHolder()
+        val album = albumList!![position]
 
         if (row == null) {
             val inflater = context.layoutInflater
@@ -34,39 +35,40 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
             holder.albumImage = row.findViewById(R.id.albumImage) as ImageView
             holder.albumName = row.findViewById(R.id.albumName) as TextView
             holder.albumCreatedAt = row.findViewById(R.id.albumCreatedAt) as TextView
-            row.setTag(holder)
 
-            // Open the AlbumFragment when the Album image is clicked.
-            holder.albumImage?.setOnClickListener() {
-                val albumFragment = AlbumFragment()
-                val data = Bundle()
-                data.putInt("album", albumList!![position].id)
-                albumFragment.setArguments(data)
-                val fragmentTransaction = this.context.fragmentManager.beginTransaction()
-                fragmentTransaction.replace(R.id.container, albumFragment)
-                fragmentTransaction.addToBackStack(null)
-                fragmentTransaction.commit()
-            }
+
+            row.setTag(holder)
 
         } else {
             holder = row.getTag() as ViewHolder
         }
-
-        val album = albumList!![position]
 
         // Set the Album image if there is at least one.
         try {
             Glide.with(context).load(album.photo_set[0].image).into(holder.albumImage!!)
         }
         catch (e: java.lang.ArrayIndexOutOfBoundsException) {
-            Log.d(TAG, "${album.name} doesn't have any images... yet.")
             Glide.with(context).load("https://via.placeholder.com/150x250?text=No%20Image%20Yet...").into(holder.albumImage!!)
         }
         holder.albumName!!.setText(album.name)
         val df = SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
         holder.albumCreatedAt!!.setText(df.format(album.created_at))
 
-        return row!!
+        // Open the AlbumFragment when grid item is clicked.
+        row!!.setOnClickListener {
+            Log.d(TAG, "Album clicked position: ${position}")
+            Log.d(TAG, "Album clicked album.name: ${album.name}")
+            val albumFragment = AlbumFragment()
+            val data = Bundle()
+            data.putInt("album", album.id)
+            albumFragment.setArguments(data)
+            val fragmentTransaction = this.context.fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.container, albumFragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+        }
+
+        return row
     }
 
     override fun getItem(position: Int): Any {
@@ -88,6 +90,16 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
 
         override fun onContextClick(v: View?): Boolean {
             Log.d(TAG, "onContextClick v: $v")
+//            Log.d(TAG, "Album clicked position: ${position}")
+//            Log.d(TAG, "Album clicked album.name: ${album.name}")
+//            val albumFragment = AlbumFragment()
+//            val data = Bundle()
+//            data.putInt("album", album.id)
+//            albumFragment.setArguments(data)
+//            val fragmentTransaction = this.context.fragmentManager.beginTransaction()
+//            fragmentTransaction.replace(R.id.container, albumFragment)
+//            fragmentTransaction.addToBackStack(null)
+//            fragmentTransaction.commit()
             return true
         }
     }

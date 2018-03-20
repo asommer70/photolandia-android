@@ -31,7 +31,7 @@
     <GridView
         android:id="@+id/photos"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="453dp"
         android:columnWidth="120dp"
         android:gravity="center"
         android:horizontalSpacing="5dp"
