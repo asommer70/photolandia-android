@@ -52,7 +52,7 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
         }
         holder.albumName!!.setText(album.name)
         val df = SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
-        holder.albumCreatedAt!!.setText(df.format(album.created_at))
+        holder.albumCreatedAt!!.setText("Created On: " + df.format(album.created_at))
 
         // Open the AlbumFragment when grid item is clicked.
         row!!.setOnClickListener {
@@ -89,17 +89,6 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
         var albumCreatedAt: TextView? = null
 
         override fun onContextClick(v: View?): Boolean {
-            Log.d(TAG, "onContextClick v: $v")
-//            Log.d(TAG, "Album clicked position: ${position}")
-//            Log.d(TAG, "Album clicked album.name: ${album.name}")
-//            val albumFragment = AlbumFragment()
-//            val data = Bundle()
-//            data.putInt("album", album.id)
-//            albumFragment.setArguments(data)
-//            val fragmentTransaction = this.context.fragmentManager.beginTransaction()
-//            fragmentTransaction.replace(R.id.container, albumFragment)
-//            fragmentTransaction.addToBackStack(null)
-//            fragmentTransaction.commit()
             return true
         }
     }

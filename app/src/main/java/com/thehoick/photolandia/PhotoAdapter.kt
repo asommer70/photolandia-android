@@ -58,7 +58,6 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val picturesView = ImageView(context)
         val layoutParams = LinearLayout.LayoutParams(520, 500)
-        val grid =
         picturesView.setLayoutParams(layoutParams)
         picturesView.setBackgroundColor(Color.BLACK)
 

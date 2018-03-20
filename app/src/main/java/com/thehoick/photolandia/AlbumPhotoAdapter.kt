@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.thehoick.photolandia.models.Photo
@@ -42,9 +43,9 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val picturesView: ImageView
         picturesView = ImageView(context)
-//        picturesView.setScaleType(ImageView.ScaleType.FIT_XY)
-//        picturesView.setLayoutParams(GridView.LayoutParams(imageWidth, imageWidth))
-//        picturesView.setPadding(0, 10, 0, 18)
+        val layoutParams = LinearLayout.LayoutParams(520, 500)
+        picturesView.setLayoutParams(layoutParams)
+        picturesView.setBackgroundColor(Color.BLACK)
 
         picturesView.setOnClickListener {
             val photo = images!![position]
