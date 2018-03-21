@@ -2,36 +2,20 @@ package com.thehoick.photolandia
 
 import android.app.Activity
 import android.graphics.Color
-import android.media.Image
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import android.widget.ImageView.ScaleType.FIT_CENTER
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.thehoick.photolandia.models.Photo
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.view.KeyEvent.KEYCODE_BACK
-import android.widget.GridView
-import android.widget.ImageView.ScaleType.FIT_START
-import android.widget.LinearLayout
-import android.support.v7.widget.GridLayoutManager
-
-
-
-
-
-
-
-
 
 
 class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val serverPhotos: Boolean = false) : BaseAdapter() {
