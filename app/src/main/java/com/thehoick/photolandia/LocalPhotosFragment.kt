@@ -48,6 +48,7 @@ class LocalPhotosFragment: Fragment() {
 
         val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
         bottomNav.visibility = View.VISIBLE
+//        gridview.smoothScrollToPosition(int index)
 
         super.onResume()
     }

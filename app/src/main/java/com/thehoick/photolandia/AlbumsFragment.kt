@@ -4,7 +4,6 @@ import android.app.Fragment
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,35 +21,25 @@ class AlbumsFragment: Fragment() {
     val TAG = AlbumsFragment::class.java.simpleName
     var AlbumFragmentAdapter: AlbumAdapter? = null
         get() = field
-
-    override fun onResume() {
-        Log.d(TAG, "onResume()...")
-        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
-        fab.show()
-
-        val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
-        bottomNav.visibility = View.VISIBLE
-
-        super.onResume()
-    }
+    var albumsView: GridView? = null
+    var scrollPos: Int? = null
+    var albums: Array<Album>? = null
 
     fun getAlbums(view: View) {
         val api = Api(context)
         val message = view.findViewById<TextView>(R.id.message)
         val progress = view.findViewById<ProgressBar>(R.id.progress)
-        val photoGrid = view.findViewById<GridView>(R.id.photos)
-        photoGrid.visibility = INVISIBLE
+        albumsView?.visibility = INVISIBLE
 
         message.setText(getString(R.string.fetching_albums))
         message.visibility = VISIBLE
         message.setTextColor(Color.BLACK)
         progress.visibility = VISIBLE
 
-
         val callback = object: Callback<AlbumResult> {
             override fun onFailure(call: Call<AlbumResult>?, t: Throwable?) {
                 Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
-                photoGrid.visibility = INVISIBLE
+                albumsView?.visibility = INVISIBLE
                 message.visibility = VISIBLE
                 message.setTextColor(Color.RED)
                 message.setText(getString(R.string.albumsError))
@@ -58,15 +47,20 @@ class AlbumsFragment: Fragment() {
             }
 
             override fun onResponse(call: Call<AlbumResult>?, response: Response<AlbumResult>?) {
-                val albumsView = view.findViewById<GridView>(R.id.photos)
-                Log.d(TAG, "response?.body()?.results.size: ${response?.body()?.results!!.size}")
+                Log.d(TAG, "getAlbums onResponse() response?.body()?.results.size: ${response?.body()?.results!!.size}")
 
-                photoGrid.visibility = VISIBLE
+                albumsView = view.findViewById<GridView>(R.id.photos)
+                albumsView?.visibility = VISIBLE
                 message.visibility = INVISIBLE
                 progress.visibility = INVISIBLE
 
-                AlbumFragmentAdapter = AlbumAdapter(activity, response.body()?.results!!)
-                albumsView.setAdapter(AlbumFragmentAdapter)
+                albums = response.body()?.results!!
+
+                if (AlbumFragmentAdapter == null) {
+                    AlbumFragmentAdapter = AlbumAdapter(activity, albums!!)
+                }
+
+                albumsView?.adapter = AlbumFragmentAdapter
             }
 
         }
@@ -74,10 +68,30 @@ class AlbumsFragment: Fragment() {
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val view = inflater!!.inflate(R.layout.activity_main, container, false)
 
-        Log.d(TAG, "AlbumsFragment.onCreate()...")
+        if (AlbumFragmentAdapter == null) {
+            getAlbums(view)
+        } else {
+            albumsView = view.findViewById<GridView>(R.id.photos)
+            albumsView?.adapter = AlbumFragmentAdapter
+
+            if (scrollPos != null) {
+                albumsView?.smoothScrollToPosition( scrollPos!!)
+            }
+        }
+
+        val albumsGrid = view.findViewById<GridView>(R.id.photos)
+        albumsGrid.setOnScrollListener(object: AbsListView.OnScrollListener {
+            override fun onScroll(view: AbsListView?, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+                this@AlbumsFragment.scrollPos = firstVisibleItem
+            }
+
+            override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {
+            }
+        })
+
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
         fab.setImageDrawable(context.getDrawable(android.R.drawable.ic_input_add))
         fab.setOnClickListener {
@@ -94,13 +108,6 @@ class AlbumsFragment: Fragment() {
 
         }
 
-    }
-
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater!!.inflate(R.layout.activity_main, container, false)
-
-        getAlbums(view)
         return view
     }
 

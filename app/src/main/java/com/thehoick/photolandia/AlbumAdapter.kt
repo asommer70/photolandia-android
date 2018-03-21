@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat
 class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter() {
     val TAG = AlbumAdapter::class.java.simpleName
     var albumList: Array<Album>? = null
+//    var scrollPos: Int? = null
 
     init{
         albumList = albums
@@ -58,6 +59,10 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
         row!!.setOnClickListener {
             Log.d(TAG, "Album clicked position: ${position}")
             Log.d(TAG, "Album clicked album.name: ${album.name}")
+
+
+//            Log.d(TAG, "${this.get}")
+//            scrollPos = position
             val albumFragment = AlbumFragment()
             val data = Bundle()
             data.putInt("album", album.id)

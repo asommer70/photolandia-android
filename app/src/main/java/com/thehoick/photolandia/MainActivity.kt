@@ -27,7 +27,11 @@ class MainActivity : AppCompatActivity() {
     private val USER_ID = "user_id"
     private val USERNAME = "username"
     private val TOKEN = "token"
-
+    var scrollPos: Int? = null
+        get() = field
+        set(value) {
+            field = value
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,7 +110,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         val inflater = menuInflater
@@ -129,7 +132,6 @@ class MainActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         Log.d(TAG, "onActiviyResult resultCode: $resultCode")
         if (resultCode == 700) {
@@ -141,6 +143,21 @@ class MainActivity : AppCompatActivity() {
 
         }
         invalidateOptionsMenu()
+    }
+
+    override fun onBackPressed() {
+
+        val count = fragmentManager.backStackEntryCount
+
+        if (count == 0) {
+            super.onBackPressed()
+            //additional code
+            val frag = fragmentManager.getBackStackEntryAt(fragmentManager.backStackEntryCount -1)
+            Log.d(TAG, "frag.name: ${frag.name}")
+        } else {
+            fragmentManager.popBackStack()
+        }
+
     }
 
     private fun localPhotosFragment() {
