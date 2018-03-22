@@ -145,20 +145,20 @@ class MainActivity : AppCompatActivity() {
         invalidateOptionsMenu()
     }
 
-    override fun onBackPressed() {
-
-        val count = fragmentManager.backStackEntryCount
-
-        if (count == 0) {
-            super.onBackPressed()
-            //additional code
-            val frag = fragmentManager.getBackStackEntryAt(fragmentManager.backStackEntryCount -1)
-            Log.d(TAG, "frag.name: ${frag.name}")
-        } else {
-            fragmentManager.popBackStack()
-        }
-
-    }
+//    override fun onBackPressed() {
+//
+//        val count = fragmentManager.backStackEntryCount
+//
+//        if (count == 0) {
+//            super.onBackPressed()
+//            //additional code
+//            val frag = fragmentManager.getBackStackEntryAt(fragmentManager.backStackEntryCount -1)
+//            Log.d(TAG, "frag.name: ${frag.name}")
+//        } else {
+//            fragmentManager.popBackStack()
+//        }
+//
+//    }
 
     private fun localPhotosFragment() {
         val localPhotosFragment = LocalPhotosFragment()

@@ -32,21 +32,7 @@ class PhotosFragment: Fragment() {
             getServerPhotos(view)
         } else {
             photosView?.adapter = photoAdapter
-
-            if (scrollPos != null) {
-                photosView?.smoothScrollToPosition(scrollPos!!)
-            }
         }
-
-        // Set the scrollPos.
-        photosView?.setOnScrollListener(object: AbsListView.OnScrollListener {
-            override fun onScroll(view: AbsListView?, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
-                scrollPos = firstVisibleItem
-            }
-
-            override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {
-            }
-        })
 
         return view
     }
@@ -70,7 +56,7 @@ class PhotosFragment: Fragment() {
             }
 
             override fun onResponse(call: Call<PhotosResult>?, response: Response<PhotosResult>?) {
-                Log.d(TAG, "response?.body()?.count: ${response?.body()?.count}")
+                Log.d(TAG, "getServerPhotos() response?.body()?.count: ${response?.body()?.count}")
 
                 progress.visibility = INVISIBLE
                 message.visibility = INVISIBLE

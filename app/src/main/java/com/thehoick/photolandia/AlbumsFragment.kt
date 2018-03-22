@@ -76,21 +76,7 @@ class AlbumsFragment: Fragment() {
         } else {
             albumsView = view.findViewById<GridView>(R.id.photos)
             albumsView?.adapter = AlbumFragmentAdapter
-
-            if (scrollPos != null) {
-                albumsView?.smoothScrollToPosition( scrollPos!!)
-            }
         }
-
-        val albumsGrid = view.findViewById<GridView>(R.id.photos)
-        albumsGrid.setOnScrollListener(object: AbsListView.OnScrollListener {
-            override fun onScroll(view: AbsListView?, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
-                this@AlbumsFragment.scrollPos = firstVisibleItem
-            }
-
-            override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {
-            }
-        })
 
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
         fab.setImageDrawable(context.getDrawable(android.R.drawable.ic_input_add))
