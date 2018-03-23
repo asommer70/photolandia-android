@@ -126,7 +126,7 @@ class Api(val context: Context) {
     }
 
     fun removeFromAlbum(albumId: String, photo_ids: String, callback: Callback<Album>) {
-        val call = service.addToAlbum(albumId, photo_ids)
+        val call = service.removeFromAlbum(albumId, photo_ids)
         call.enqueue(callback)
     }
 
