@@ -84,7 +84,7 @@ class AlbumsFragment: Fragment() {
         }
 
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
-        fab.setImageDrawable(context.getDrawable(android.R.drawable.ic_input_add))
+        fab.setImageDrawable(context.getDrawable(R.drawable.ic_plus_icon))
         fab.setOnClickListener {
             // Input DialogFragment.
             Log.d(TAG, "Creating album...")

@@ -22,21 +22,16 @@ class AlbumFragment: Fragment() {
     public val ALBUM_INDEX = "album_index"
     var albumPhotoAdapter: AlbumPhotoAdapter? = null
 
-    override fun onResume() {
-        Log.d(TAG, "onResume()...")
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val view = inflater!!.inflate(R.layout.album_layout, container, false)
+
+        val albumId = getArguments().getInt("album")
+
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
         fab.show()
 
         val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
         bottomNav.visibility = View.VISIBLE
-
-        super.onResume()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater!!.inflate(R.layout.album_layout, container, false)
-
-        val albumId = getArguments().getInt("album")
 
         val api = Api(view.context)
         val albumDetailName = view.findViewById<TextView>(R.id.albumDetailName)

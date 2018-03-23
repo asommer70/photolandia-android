@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +23,7 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
     val TAG = AlbumPhotoAdapter::class.java.simpleName
     var images: Array<Photo>? = null
     var selectedPhotos = mutableListOf<List<String?>>()
-    val syncButton = context.findViewById<FloatingActionButton>(R.id.fab)
+    val fab = context.findViewById<FloatingActionButton>(R.id.fab)
 
     init {
         this.images = images
@@ -45,7 +46,7 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
         picturesView = ImageView(context)
         val layoutParams = LinearLayout.LayoutParams(520, 500)
         picturesView.setLayoutParams(layoutParams)
-        picturesView.setBackgroundColor(Color.BLACK)
+        picturesView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryLight))
 
         picturesView.setOnClickListener {
             val photo = images!![position]
@@ -64,14 +65,14 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
             val photo = images!![position]
             Log.d(TAG, "Long click photo: $photo")
             it.setPadding(4, 2,4 , 2)
-            it.setBackgroundColor(Color.MAGENTA)
+            it.setBackgroundColor(ContextCompat.getColor(context, R.color.colorSelect))
             this.selectedPhotos.add(listOf(photo.id.toString(), photo.image, position.toString()))
-            syncButton.setImageDrawable(context.getDrawable(android.R.drawable.ic_menu_delete))
+            fab.setImageDrawable(context.getDrawable(android.R.drawable.ic_menu_delete))
             true
         }
 
 
-        syncButton.setOnClickListener {
+        fab.setOnClickListener {
             val ids = selectedPhotos.map { it[0] }
             val idsString = ids.joinToString( ",")
 

@@ -88,7 +88,7 @@ class LocalPhotosFragment: Fragment() {
     }
 
     fun setSyncButtonToSync() {
-        syncButton?.setImageDrawable(context.getDrawable(android.R.drawable.ic_menu_upload))
+        syncButton?.setImageDrawable(context.getDrawable(R.drawable.ic_upload_icon))
         syncButton?.setOnClickListener {
             val prefs = activity.getSharedPreferences(activity.packageName + "_preferences", 0)
             val defaultAlbumId = prefs!!.getString("default_album_id", null)

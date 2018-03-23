@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -43,7 +44,7 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
         val picturesView = ImageView(context)
         val layoutParams = LinearLayout.LayoutParams(520, 500)
         picturesView.setLayoutParams(layoutParams)
-        picturesView.setBackgroundColor(Color.BLACK)
+        picturesView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryLight))
 
         picturesView.setOnClickListener {
             val photo = images!![position]
@@ -72,7 +73,7 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
             picturesView.setOnLongClickListener {
                 val photo = images!![position]
                 it.setPadding(4, 2,4 , 2)
-                it.setBackgroundColor(Color.MAGENTA)
+                it.setBackgroundColor(ContextCompat.getColor(context, R.color.colorSelect))
                 this.selectedPhotos.add(photo)
                 true
             }
