@@ -50,17 +50,20 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
 
             val photoFragment = PhotoFragment()
             val data = Bundle()
+            var photoFragmentName: String
             if (serverPhotos) {
                 data.putString("photo", photo.image)
                 data.putBoolean("local", false)
+                photoFragmentName = "server_photo_fragment"
             } else {
                 data.putString("photo", photo.local_path)
                 data.putBoolean("local", true)
+                photoFragmentName = "local_photo_fragment"
             }
             photoFragment.arguments = data
 
             val fragmentTransaction = this.context.fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.container, photoFragment, "photo_fragment")
+            fragmentTransaction.replace(R.id.container, photoFragment, photoFragmentName)
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
         }
@@ -74,9 +77,9 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
                 true
             }
 
-            val syncButton = context.findViewById<FloatingActionButton>(R.id.fab)
-            syncButton.setImageDrawable(context.getDrawable(R.drawable.ic_add_album_icon))
-            syncButton.setOnClickListener {
+            val fab = context.findViewById<FloatingActionButton>(R.id.fab)
+            fab.setImageDrawable(context.getDrawable(R.drawable.ic_add_album_icon))
+            fab.setOnClickListener {
                 val ids = selectedPhotos.map { it.id }
                 val idsString = ids.joinToString( ",")
 

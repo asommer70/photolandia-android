@@ -3,13 +3,13 @@ package com.thehoick.photolandia
 import android.app.Fragment
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.AbsListView
 import android.widget.GridView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -21,12 +21,16 @@ import retrofit2.Response
 class PhotosFragment: Fragment() {
     val TAG = PhotosFragment::class.java.simpleName
     var photosView: GridView? = null
-    var scrollPos: Int? = null
     var photoAdapter: PhotoAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
         photosView = view.findViewById(R.id.photos)
+
+        Log.d(TAG, "onCreateView...")
+
+        val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
+        bottomNav.visibility = View.VISIBLE
 
         if (photoAdapter == null) {
             getServerPhotos(view)

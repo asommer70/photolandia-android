@@ -4,6 +4,7 @@ import android.app.Fragment
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,7 +12,10 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.GridView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,9 +24,7 @@ import retrofit2.Response
 class AlbumsFragment: Fragment() {
     val TAG = AlbumsFragment::class.java.simpleName
     var AlbumFragmentAdapter: AlbumAdapter? = null
-        get() = field
     var albumsView: GridView? = null
-    var scrollPos: Int? = null
     var albums: Array<Album>? = null
 
     fun getAlbums(view: View) {
@@ -70,6 +72,9 @@ class AlbumsFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
+
+        val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
+        bottomNav.visibility = View.VISIBLE
 
         if (AlbumFragmentAdapter == null) {
             getAlbums(view)

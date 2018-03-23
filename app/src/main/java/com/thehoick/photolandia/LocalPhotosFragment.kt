@@ -42,16 +42,16 @@ class LocalPhotosFragment: Fragment() {
     var syncButton: FloatingActionButton? = null
     var message: TextView? = null
 
-    override fun onResume() {
-        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
-        fab.show()
-
-        val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
-        bottomNav.visibility = View.VISIBLE
-//        gridview.smoothScrollToPosition(int index)
-
-        super.onResume()
-    }
+//    override fun onResume() {
+//        val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
+//        fab.show()
+//
+//        val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
+//        bottomNav.visibility = View.VISIBLE
+////        gridview.smoothScrollToPosition(int index)
+//
+//        super.onResume()
+//    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
@@ -60,10 +60,16 @@ class LocalPhotosFragment: Fragment() {
         progress.visibility = VISIBLE
         val photos = view.findViewById(R.id.photos) as GridView
 
+
+        val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
+        bottomNav.visibility = View.VISIBLE
+
         // Check if all photos have been uploaded and if so set the message and don't create a photo grid.
         val images = getLocalPhotos(activity)
         if (images!!.isNotEmpty()) {
-            photosAdapter = PhotoAdapter(activity, images, false)
+            if (photosAdapter == null) {
+                photosAdapter = PhotoAdapter(activity, images, false)
+            }
             photos.adapter = photosAdapter
             progress.visibility = INVISIBLE
         } else {

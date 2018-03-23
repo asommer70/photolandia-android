@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -145,21 +144,6 @@ class MainActivity : AppCompatActivity() {
         invalidateOptionsMenu()
     }
 
-//    override fun onBackPressed() {
-//
-//        val count = fragmentManager.backStackEntryCount
-//
-//        if (count == 0) {
-//            super.onBackPressed()
-//            //additional code
-//            val frag = fragmentManager.getBackStackEntryAt(fragmentManager.backStackEntryCount -1)
-//            Log.d(TAG, "frag.name: ${frag.name}")
-//        } else {
-//            fragmentManager.popBackStack()
-//        }
-//
-//    }
-
     private fun localPhotosFragment() {
         val localPhotosFragment = LocalPhotosFragment()
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -170,10 +154,12 @@ class MainActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.local_photos -> {
+                Log.d(TAG, "LocalPhotos clicked...")
                 localPhotosFragment()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.albums -> {
+                Log.d(TAG, "Albums clicked...")
                 token = prefs!!.getString(TOKEN, "")
                 if (token.isNullOrEmpty()) {
                     // Open the LoginActivity.
@@ -198,6 +184,8 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.serverPhotos -> {
+                Log.d(TAG, "ServerPhotos clicked...")
+
                 token = prefs!!.getString(TOKEN, "")
                 if (token.isNullOrEmpty()) {
                     // Open the LoginActivity.
