@@ -64,7 +64,7 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
             val photo = images!![position]
             Log.d(TAG, "Long click photo: $photo")
             it.setPadding(4, 2,4 , 2)
-            it.setBackgroundColor(Color.BLACK)
+            it.setBackgroundColor(Color.MAGENTA)
             this.selectedPhotos.add(listOf(photo.id.toString(), photo.image, position.toString()))
             syncButton.setImageDrawable(context.getDrawable(android.R.drawable.ic_menu_delete))
             true

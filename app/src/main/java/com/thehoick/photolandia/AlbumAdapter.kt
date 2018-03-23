@@ -34,8 +34,6 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
             row = inflater!!.inflate(R.layout.album_item, parent, false)
             holder.albumImage = row.findViewById(R.id.albumImage) as ImageView
             holder.albumName = row.findViewById(R.id.albumName) as TextView
-            holder.albumCreatedAt = row.findViewById(R.id.albumCreatedAt) as TextView
-
 
             row.setTag(holder)
 
@@ -52,7 +50,6 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
         }
         holder.albumName!!.setText(album.name)
         val df = SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
-        holder.albumCreatedAt!!.setText("Created On: " + df.format(album.created_at))
 
         // Open the AlbumFragment when grid item is clicked.
         row!!.setOnClickListener {
@@ -84,7 +81,6 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
     private inner class ViewHolder: View.OnContextClickListener {
         var albumImage: ImageView? = null
         var albumName: TextView? = null
-        var albumCreatedAt: TextView? = null
 
         override fun onContextClick(v: View?): Boolean {
             return true
