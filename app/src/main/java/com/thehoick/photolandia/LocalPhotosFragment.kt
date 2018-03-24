@@ -100,7 +100,7 @@ class LocalPhotosFragment: Fragment() {
         }
     }
 
-    fun getLocalPhotos(activity: Activity): ArrayList<Photo>? {
+    fun getLocalPhotos(activity: Activity): List<Photo>? {
         val uri: Uri
         val cursor: Cursor?
         val column_index_data: Int
@@ -159,13 +159,19 @@ class LocalPhotosFragment: Fragment() {
             }
         }
 
+        Log.d(TAG, "listOfAllImages.size: ${listOfAllImages.size}")
+
         cursor.close()
         if (listOfAllImages.isNotEmpty()) {
             // Reasonable number of unuploaded photos to put in the list.
-            return listOfAllImages.take(20).reversed() as ArrayList<Photo>
+            if (listOfAllImages.size > 20) {
+                return listOfAllImages.take(20).reversed()
+            } else {
+                return listOfAllImages.reversed()
+            }
         } else {
             // Only get un-uploaded Photos.
-            return dataSource.getUnuploadedPhotos() as ArrayList<Photo>
+            return dataSource.getUnuploadedPhotos()
         }
     }
 
