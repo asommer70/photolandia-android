@@ -51,6 +51,8 @@ class LoginActivity : AppCompatActivity() {
             val username = usernameInput!!.text.toString()
             val password = passwordInput!!.text.toString()
 
+            Log.d(TAG, "username: $username, password: $password")
+
             val api = Api(it.context)
             val callback = object: Callback<User> {
                 override fun onFailure(call: Call<User>?, t: Throwable?) {

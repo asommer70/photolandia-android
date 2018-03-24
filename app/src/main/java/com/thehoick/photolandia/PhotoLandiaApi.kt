@@ -11,9 +11,6 @@ import retrofit2.http.*
 import java.io.IOException
 import java.util.*
 
-
-val baseUrl = "http://gallium:3000"
-
 interface PhotolandiaApi {
     @GET("/albums/api")
     fun getAlbums(): Call<AlbumResult>
@@ -55,8 +52,6 @@ class Album(val id: Int, val name: String, val description: String, val created_
 
 class AlbumResult(val count: Float, val next: Int?, val previous: Int?, val results: Array<Album>)
 
-//class Photo(val id: Int, val image: String, val filename: String, val caption: String, val createdAt: Date, val updatedAt: Date)
-
 class PhotosResult(val count: Int, val next: String?, val previous: String?, val results: Array<Photo>)
 
 class User(val id: Int, val username: String, val token: String, val message: String)
@@ -64,6 +59,7 @@ class User(val id: Int, val username: String, val token: String, val message: St
 class Api(val context: Context) {
     val service: PhotolandiaApi
     var token: String? = null
+    var baseUrl: String? = null
     private val USER_ID = "user_id"
     private val USERNAME = "username"
     private val TOKEN = "token"
@@ -72,6 +68,7 @@ class Api(val context: Context) {
     init {
         val prefs = context.getSharedPreferences(context.getPackageName() + "_preferences", 0)
         token = prefs?.getString(TOKEN, "")
+        baseUrl = prefs?.getString("url", "")
 
         val httpClient = OkHttpClient.Builder()
 
