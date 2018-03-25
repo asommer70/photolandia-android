@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             READ_EXTERNAL_REQUEST_CODE -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG, "READ_EXTERNAL_STORAGE permission has been denied by user.")
+                    Log.i(TAG, "READ_EXTERNAL_STORAGE permission has been denied by user.")
 
                     // Bring up the home screen.
                     val intent = Intent(Intent.ACTION_MAIN)
@@ -132,10 +132,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        Log.d(TAG, "onActiviyResult resultCode: $resultCode")
         if (resultCode == 700) {
-            Log.d(TAG, "Logged in successfully from Albums...")
-
             findViewById<View>(R.id.albums).performClick()
         } else if (resultCode == 800) {
             findViewById<View>(R.id.serverPhotos).performClick()
@@ -154,12 +151,10 @@ class MainActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.local_photos -> {
-                Log.d(TAG, "LocalPhotos clicked...")
                 localPhotosFragment()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.albums -> {
-                Log.d(TAG, "Albums clicked...")
                 token = prefs!!.getString(TOKEN, "")
                 if (token.isNullOrEmpty()) {
                     // Open the LoginActivity.
@@ -184,8 +179,6 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.serverPhotos -> {
-                Log.d(TAG, "ServerPhotos clicked...")
-
                 token = prefs!!.getString(TOKEN, "")
                 if (token.isNullOrEmpty()) {
                     // Open the LoginActivity.

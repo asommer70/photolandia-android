@@ -1,7 +1,6 @@
 package com.thehoick.photolandia
 
 import android.app.Activity
-import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.ContextCompat
@@ -63,7 +62,6 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
 
         picturesView.setOnLongClickListener {
             val photo = images!![position]
-            Log.d(TAG, "Long click photo: $photo")
             it.setPadding(4, 2,4 , 2)
             it.setBackgroundColor(ContextCompat.getColor(context, R.color.colorSelect))
             this.selectedPhotos.add(listOf(photo.id.toString(), photo.image, position.toString()))
@@ -76,18 +74,14 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
             val ids = selectedPhotos.map { it[0] }
             val idsString = ids.joinToString( ",")
 
-            Log.d(TAG, "idsString: $idsString")
-
             val api = Api(this.context)
             val callback = object: Callback<Album> {
                 override fun onFailure(call: Call<Album>?, t: Throwable?) {
-                    Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
+                    Log.i(TAG, "A problem occurred inside callback for getAlbums()...")
                     Toast.makeText(context, "A problem occurred inside callback for getAlbums()...", Toast.LENGTH_LONG).show()
                 }
 
                 override fun onResponse(call: Call<Album>?, response: Response<Album>?) {
-                    Log.d(TAG, "response?.body()?: ${response?.body()?.toString()}")
-
                     // Refresh Album photos.
                     val newImages = images!!.toMutableList()
                     var isZero = false
@@ -119,13 +113,12 @@ class AlbumPhotoAdapter(private val context: Activity, val albumId: Int, images:
         val api = Api(this.context)
         val callback = object: Callback<Album> {
             override fun onFailure(call: Call<Album>?, t: Throwable?) {
-                Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
+                Log.i(TAG, "A problem occurred inside callback for getAlbums()...")
                 Toast.makeText(context, "A problem occurred inside callback for getAlbums()...", Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(call: Call<Album>?, response: Response<Album>?) {
-                Log.d(TAG, "response?.body: ${response?.body()?.toString()}")
-
+                Log.i(TAG, "response?.body: ${response?.body()?.toString()}")
             }
 
         }

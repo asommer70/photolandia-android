@@ -16,7 +16,6 @@ class ProgressPieIndicator : ProgressIndicator {
     override fun getView(parent: BigImageView): View? {
         mProgressPieView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.ui_progress_pie_indecator, parent, false) as ProgressPieView
-        Log.d(TAG,"getView()...")
         return mProgressPieView
     }
 

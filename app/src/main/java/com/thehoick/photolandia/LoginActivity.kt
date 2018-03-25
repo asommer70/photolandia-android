@@ -54,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
             val api = Api(it.context)
             val callback = object: Callback<User> {
                 override fun onFailure(call: Call<User>?, t: Throwable?) {
-                    Log.d(TAG, "A problem occurred logging in...")
+                    Log.i(TAG, "A problem occurred logging in...")
                     // Display login error message.
                     statusText!!.text = getString(R.string.bad_username_or_password)
                     statusText!!.visibility = View.VISIBLE

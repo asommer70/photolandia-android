@@ -27,8 +27,6 @@ class PhotosFragment: Fragment() {
         val view = inflater!!.inflate(R.layout.activity_main, container, false)
         photosView = view.findViewById(R.id.photos)
 
-        Log.d(TAG, "onCreateView...")
-
         val bottomNav = activity.findViewById<BottomNavigationView>(R.id.navigation)
         bottomNav.visibility = View.VISIBLE
 
@@ -52,7 +50,7 @@ class PhotosFragment: Fragment() {
 
         val callback = object: Callback<PhotosResult> {
             override fun onFailure(call: Call<PhotosResult>?, t: Throwable?) {
-                Log.d(TAG, "A problem occurred inside callback for getPhotos()...")
+                Log.i(TAG, "A problem occurred inside callback for getPhotos()...")
                 progress.visibility = INVISIBLE
                 message.text = getString(R.string.fetching_photos_error)
                 message.setTextColor(Color.RED)
@@ -60,8 +58,6 @@ class PhotosFragment: Fragment() {
             }
 
             override fun onResponse(call: Call<PhotosResult>?, response: Response<PhotosResult>?) {
-                Log.d(TAG, "getServerPhotos() response?.body()?.count: ${response?.body()?.count}")
-
                 progress.visibility = INVISIBLE
                 message.visibility = INVISIBLE
 

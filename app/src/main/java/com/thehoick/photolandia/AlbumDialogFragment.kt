@@ -1,24 +1,15 @@
 package com.thehoick.photolandia
 
-import android.content.DialogInterface
-import android.R.string.cancel
 import android.app.AlertDialog
 import android.app.Dialog
-import android.os.Bundle
-//import android.support.v4.app.DialogFragment
-//android.support.v4.app.DialogFragment
 import android.app.DialogFragment
-import android.R.array
-import android.graphics.Color
+import android.content.DialogInterface
+import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.GridView
 import android.widget.Toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.R.attr.duration
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 class AlbumDialogFragment : DialogFragment() {
@@ -49,13 +40,12 @@ class AlbumDialogFragment : DialogFragment() {
         val api = Api(this.context)
         val callback = object: Callback<Album> {
             override fun onFailure(call: Call<Album>?, t: Throwable?) {
-                Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
+                Log.i(TAG, "A problem occurred inside callback for getAlbums()...")
                 Toast.makeText(context, "A problem occurred inside callback for getAlbums()...", Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(call: Call<Album>?, response: Response<Album>?) {
-                Log.d(TAG, "response?.body: ${response?.body()?.toString()}")
-
+                Log.i(TAG, "response?.body: ${response?.body()?.toString()}")
             }
 
         }

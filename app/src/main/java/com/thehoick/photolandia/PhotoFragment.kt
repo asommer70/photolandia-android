@@ -1,13 +1,10 @@
 package com.thehoick.photolandia
 
-import android.app.Activity
 import android.app.Fragment
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
-import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
@@ -58,7 +55,6 @@ class PhotoFragment: Fragment() {
             }
 
             override fun onSuccess(image: File?) {
-                Log.d(TAG, "imageLoaderCallback onSuccess()...")
                 photoProgress?.visibility = INVISIBLE
                 imageView?.visibility = VISIBLE
             }
@@ -79,7 +75,6 @@ class PhotoFragment: Fragment() {
             }
         }
 
-//        imageView?.setProgressIndicator(ProgressPieIndicator())
         imageView?.setImageLoaderCallback(imageLoaderCallback);
 
         return view

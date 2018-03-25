@@ -1,15 +1,14 @@
 package com.thehoick.photolandia
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.BaseAdapter
+import android.widget.ImageView
+import android.widget.TextView
 import com.bumptech.glide.Glide
 import retrofit2.Call
 import retrofit2.Callback
@@ -88,16 +87,14 @@ class AlbumAdapter(val context: Activity, val albums: Array<Album>): BaseAdapter
     }
 
     fun getAlbums(context: Context) {
-        Log.d(TAG, "AlbumAdaptoer.getAlbums()...")
         val api = Api(context)
         val callback = object: Callback<AlbumResult> {
             override fun onFailure(call: Call<AlbumResult>?, t: Throwable?) {
-                Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
+                Log.i(TAG, "A problem occurred inside callback for getAlbums()...")
             }
 
             override fun onResponse(call: Call<AlbumResult>?, response: Response<AlbumResult>?) {
-                Log.d(TAG, "getAlbums() response?.body()?.results.size: ${response?.body()?.results!!.size}")
-                this@AlbumAdapter.albumList = response.body()?.results!!
+                this@AlbumAdapter.albumList = response?.body()?.results!!
                 this@AlbumAdapter.notifyDataSetInvalidated()
                 this@AlbumAdapter.notifyDataSetChanged()
             }

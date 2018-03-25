@@ -40,7 +40,7 @@ class AlbumsFragment: Fragment() {
 
         val callback = object: Callback<AlbumResult> {
             override fun onFailure(call: Call<AlbumResult>?, t: Throwable?) {
-                Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
+                Log.i(TAG, "A problem occurred inside callback for getAlbums()...")
                 albumsView?.visibility = INVISIBLE
                 message.visibility = VISIBLE
                 message.setTextColor(Color.RED)
@@ -49,14 +49,12 @@ class AlbumsFragment: Fragment() {
             }
 
             override fun onResponse(call: Call<AlbumResult>?, response: Response<AlbumResult>?) {
-                Log.d(TAG, "getAlbums onResponse() response?.body()?.results.size: ${response?.body()?.results!!.size}")
-
                 albumsView = view.findViewById<GridView>(R.id.photos)
                 albumsView?.visibility = VISIBLE
                 message.visibility = INVISIBLE
                 progress.visibility = INVISIBLE
 
-                albums = response.body()?.results!!
+                albums = response?.body()?.results!!
 
                 if (AlbumFragmentAdapter == null) {
                     AlbumFragmentAdapter = AlbumAdapter(activity, albums!!)
@@ -87,7 +85,6 @@ class AlbumsFragment: Fragment() {
         fab.setImageDrawable(context.getDrawable(R.drawable.ic_plus_icon))
         fab.setOnClickListener {
             // Input DialogFragment.
-            Log.d(TAG, "Creating album...")
             val bundle = Bundle()
             val albumCreateDialogFragment = AlbumCreateDialogFragment()
             albumCreateDialogFragment.arguments = bundle
@@ -103,17 +100,14 @@ class AlbumsFragment: Fragment() {
     }
 
     fun createAlbum(newAlbumName: String?) {
-        Log.d(TAG, "newAlbumName: $newAlbumName")
-
         val api = Api(this.context)
         val callback = object : Callback<Album> {
             override fun onFailure(call: Call<Album>?, t: Throwable?) {
-                Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
+                Log.i(TAG, "A problem occurred inside callback for getAlbums()...")
                 Toast.makeText(context, "A problem occurred inside callback for getAlbums()...", Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(call: Call<Album>?, response: Response<Album>?) {
-                Log.d(TAG, "createAlbum() response?.body: ${response?.body()?.toString()}")
                 AlbumFragmentAdapter!!.getAlbums(context)
             }
 

@@ -19,7 +19,6 @@ import retrofit2.Response
 
 class AlbumFragment: Fragment() {
     val TAG = AlbumFragment::class.java.simpleName
-    public val ALBUM_INDEX = "album_index"
     var albumPhotoAdapter: AlbumPhotoAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -41,7 +40,7 @@ class AlbumFragment: Fragment() {
 
         val callback = object: Callback<Album> {
             override fun onFailure(call: Call<Album>?, t: Throwable?) {
-                Log.d(TAG, "A problem occurred inside callback for getAlbum()...")
+                Log.i(TAG, "A problem occurred inside callback for getAlbum()...")
                 albumDetailName.setText(getString(R.string.problem_fetching_album_details))
                 albumDetailName.setTextColor(Color.RED)
                 progressAlbumDetails.visibility = INVISIBLE
@@ -49,10 +48,7 @@ class AlbumFragment: Fragment() {
 
             override fun onResponse(call: Call<Album>?, response: Response<Album>?) {
                 val albumDetailPhotosView = view.findViewById<GridView>(R.id.albumDetailPhotos)
-                Log.d(TAG, "response?.body()?.name: ${response?.body()?.name}")
-
                 progressAlbumDetails.visibility = INVISIBLE
-
                 albumDetailName.setText(response?.body()?.name)
 
                 albumPhotoAdapter = AlbumPhotoAdapter(activity, response?.body()?.id!!, response.body()?.photo_set!!)

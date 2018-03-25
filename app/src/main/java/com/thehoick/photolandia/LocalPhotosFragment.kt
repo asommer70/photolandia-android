@@ -18,7 +18,6 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.GridView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -95,8 +94,6 @@ class LocalPhotosFragment: Fragment() {
                 val dataSource = PhotolandiaDataSource(context)
                 val localPhotos = dataSource.getUnuploadedPhotos()
 
-                Log.d(TAG, "localPhotos.size: ${localPhotos.size}")
-
                 for (photo in localPhotos) {
                     upload(photo)
                 }
@@ -162,8 +159,6 @@ class LocalPhotosFragment: Fragment() {
             }
         }
 
-        Log.d(TAG, "listOfAllImages.size: ${listOfAllImages.size}")
-
         cursor.close()
         if (listOfAllImages.isNotEmpty()) {
             // Reasonable number of unuploaded photos to put in the list.
@@ -199,7 +194,7 @@ class LocalPhotosFragment: Fragment() {
 
             val callback = object: Callback<Photo> {
                 override fun onFailure(call: Call<Photo>?, t: Throwable?) {
-                    Log.d(TAG, "A problem occurred uploading image... photo.local_path: ${photo.local_path}")
+                    Log.i(TAG, "A problem occurred uploading image... photo.local_path: ${photo.local_path}")
                 }
 
                 override fun onResponse(call: Call<Photo>?, response: Response<Photo>?) {
@@ -213,9 +208,6 @@ class LocalPhotosFragment: Fragment() {
                         photosAdapter?.images = photosAdapter?.images?.filter { it.local_path != uploadedPhoto.local_path }
                         photosAdapter?.notifyDataSetChanged()
 
-                        Log.d(TAG, "photosAdapter?.images?.size: ${photosAdapter?.images?.size}")
-                        Log.d(TAG, "uploadedPhoto.id: ${uploadedPhoto.id}")
-
                         message?.setText(getString(R.string.photos_uploaded_check_for_more))
                         message?.visibility = VISIBLE
                         photoGrid?.visibility = INVISIBLE
@@ -228,9 +220,7 @@ class LocalPhotosFragment: Fragment() {
                             setSyncButtonToSync()
                         }
                     } else {
-                        Log.d(TAG, "Failed to upload photo.local_filename: ${photo.local_filename}")
-                        Log.d(TAG, "failed photo.local_id: ${photo.local_id}")
-                        Log.d(TAG, "failed photo.local_path: ${photo.local_path}")
+                        Log.i(TAG, "Failed to upload photo.local_filename: ${photo.local_filename}")
                         Snackbar.make(view, "Problem with ${photo.local_filename}", Snackbar.LENGTH_SHORT).show()
                     }
                 }

@@ -1,12 +1,9 @@
 package com.thehoick.photolandia
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.Glide
-import android.content.Intent.getIntent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.widget.ImageView
+import com.bumptech.glide.Glide
 
 
 class PhotoView : AppCompatActivity() {
@@ -22,8 +19,6 @@ class PhotoView : AppCompatActivity() {
         imageView = findViewById(R.id.photo)
 
         val photo = intent.getStringExtra(PHOTO)
-        Log.d(TAG, "photo: $photo")
-
         Glide.with(this).load(photo).into(imageView!!)
     }
 

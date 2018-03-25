@@ -22,7 +22,6 @@ class PhotolandiaDataSource(context: Context) {
         val db = open()
 
         // Implementation details... maybe don't need to use transactions for simple inserts.
-        Log.d(TAG, "createPhoto photo.local_path: ${photo.local_path}")
         val photoValues = ContentValues()
         photoValues.put("id", photo.id)
         photoValues.put("image", photo.image)

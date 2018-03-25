@@ -5,14 +5,8 @@ import android.app.Dialog
 import android.app.DialogFragment
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import android.text.InputType
 import android.widget.EditText
-import android.widget.PopupMenu
 
 
 class AlbumCreateDialogFragment : DialogFragment(), DialogInterface.OnDismissListener {
@@ -43,8 +37,6 @@ class AlbumCreateDialogFragment : DialogFragment(), DialogInterface.OnDismissLis
     }
 
     override fun onDismiss(dialog: DialogInterface?) {
-        Log.d(TAG, "onDismiss albumCreateDialog...")
-
         super.onDismiss(dialog)
         onDismissListener?.onDismiss(dialog);
     }

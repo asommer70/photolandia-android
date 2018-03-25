@@ -1,6 +1,5 @@
 package com.thehoick.photolandia
 
-import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceFragment
 import android.view.LayoutInflater
