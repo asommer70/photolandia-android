@@ -40,6 +40,7 @@ import java.io.IOException
 class LocalPhotosFragment: Fragment() {
     val TAG = LocalPhotosFragment::class.java.simpleName
     var photosAdapter: PhotoAdapter? = null
+    var photoGrid: GridView? = null
     var syncButton: FloatingActionButton? = null
     var message: TextView? = null
 
@@ -48,7 +49,7 @@ class LocalPhotosFragment: Fragment() {
 
         val progress = view.findViewById<ProgressBar>(R.id.progress)
         progress.visibility = VISIBLE
-        val photos = view.findViewById(R.id.photos) as GridView
+        photoGrid = view.findViewById(R.id.photos)
 
         val fab = activity.findViewById<FloatingActionButton>(R.id.fab)
         fab.show()
@@ -61,10 +62,10 @@ class LocalPhotosFragment: Fragment() {
             if (photosAdapter == null) {
                 photosAdapter = PhotoAdapter(activity, images, false)
             }
-            photos.adapter = photosAdapter
+            photoGrid?.adapter = photosAdapter
             progress.visibility = INVISIBLE
         } else {
-            photos.visibility = INVISIBLE
+            photoGrid?.visibility = INVISIBLE
             message = view.findViewById<TextView>(R.id.message)
             message?.setText(getString(R.string.all_photos_uploaded))
             message?.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24f)
@@ -141,10 +142,6 @@ class LocalPhotosFragment: Fragment() {
             val filename = absolutePathOfImage.split("/").last()
             val imageId = cursor.getString(column_index_date_taken)
 
-//            Log.d(TAG, "absolutePathOfImage: $absolutePathOfImage")
-//            Log.d(TAG, "imageId: $imageId")
-//            Log.d(TAG, "filename: $filename")
-
             // Check if the photo is in the database.
             var photo: Photo? = null
             photo = dataSource.getPhoto(absolutePathOfImage)
@@ -154,11 +151,14 @@ class LocalPhotosFragment: Fragment() {
 
                 // Add photo to the database.
                 dataSource.createPhoto(photo)
-                listOfAllImages.add(photo)
-            }
 
-            if (photo.image == null) {
+                // Add the Photo to the list if it wasn't in the local database.
                 listOfAllImages.add(photo)
+            } else {
+                // Add the Photo to the list if it's note been uploaded.
+                if (photo.image == null) {
+                    listOfAllImages.add(photo)
+                }
             }
         }
 
@@ -167,11 +167,11 @@ class LocalPhotosFragment: Fragment() {
         cursor.close()
         if (listOfAllImages.isNotEmpty()) {
             // Reasonable number of unuploaded photos to put in the list.
-//            if (listOfAllImages.size > 20) {
-            return listOfAllImages.take(20).reversed()
-//            } else {
-//                return listOfAllImages.reversed()
-//            }
+            if (listOfAllImages.size > 20) {
+                return listOfAllImages.take(20).reversed()
+            } else {
+                return listOfAllImages.reversed()
+            }
         } else {
             // Only get un-uploaded Photos.
             return dataSource.getUnuploadedPhotos()
@@ -179,7 +179,7 @@ class LocalPhotosFragment: Fragment() {
     }
 
     fun upload(photo: Photo, otherContext: Context? = null) {
-        var theContext: Context
+        val theContext: Context
         if (otherContext != null) {
             theContext = otherContext
         } else {
@@ -210,13 +210,15 @@ class LocalPhotosFragment: Fragment() {
                         val dataSource = PhotolandiaDataSource(theContext)
                         dataSource.updatePhoto(uploadedPhoto!!)
 
-                        photosAdapter!!.images = photosAdapter!!.images!!.filter { it.local_path != uploadedPhoto.local_path }
-                        photosAdapter!!.notifyDataSetChanged()
+                        photosAdapter?.images = photosAdapter?.images?.filter { it.local_path != uploadedPhoto.local_path }
+                        photosAdapter?.notifyDataSetChanged()
 
+                        Log.d(TAG, "photosAdapter?.images?.size: ${photosAdapter?.images?.size}")
                         Log.d(TAG, "uploadedPhoto.id: ${uploadedPhoto.id}")
 
                         message?.setText(getString(R.string.photos_uploaded_check_for_more))
                         message?.visibility = VISIBLE
+                        photoGrid?.visibility = INVISIBLE
 
                         syncButton?.setImageDrawable(view.context.getDrawable(android.R.drawable.ic_popup_sync))
                         syncButton?.setOnClickListener {
@@ -225,8 +227,6 @@ class LocalPhotosFragment: Fragment() {
                             photosAdapter?.notifyDataSetChanged()
                             setSyncButtonToSync()
                         }
-
-//                        Snackbar.make(view, "Uploaded ${uploadedPhoto.local_filename}", Snackbar.LENGTH_SHORT).show()
                     } else {
                         Log.d(TAG, "Failed to upload photo.local_filename: ${photo.local_filename}")
                         Log.d(TAG, "failed photo.local_id: ${photo.local_id}")

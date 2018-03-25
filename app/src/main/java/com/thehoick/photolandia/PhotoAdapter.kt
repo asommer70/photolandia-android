@@ -3,16 +3,15 @@ package com.thehoick.photolandia
 import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.internal.BottomNavigationItemView
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
+import android.support.v7.view.menu.MenuView
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import com.bumptech.glide.Glide
 import com.thehoick.photolandia.database.PhotolandiaDataSource
 import com.thehoick.photolandia.models.Photo
@@ -120,6 +119,9 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
             // Try to upload a single photo.
             picturesView.setOnLongClickListener {
                 val photo = images!![position]
+                it.setPadding(4, 2,4 , 2)
+                it.setBackgroundColor(ContextCompat.getColor(context, R.color.colorSelect))
+                this.selectedPhotos.add(photo)
 
                 val callback = object: Callback<Photo> {
                     override fun onFailure(call: Call<Photo>?, t: Throwable?) {
@@ -130,7 +132,7 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
                     override fun onResponse(call: Call<Photo>?, response: Response<Photo>?) {
                         if (response?.body()?.local_id != null) {
                             // Update the local database with Photo details.
-                            Log.d(TAG, "getPhoto response?.body()?.local_id: ${response?.body()?.local_id}")
+                            Log.d(TAG, "getPhoto response?.body()?.local_id: ${response.body()?.local_id}")
 
                             val serverPhoto = response.body()
                             val dataSource = PhotolandiaDataSource(context)
@@ -139,13 +141,16 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
                             images = images!!.filter { it.local_path != serverPhoto.local_path }
                             notifyDataSetChanged()
 
-                            Log.d(TAG, "getPhoto response?.body()?.local_id: ${response?.body()?.local_id} updated!")
+                            Log.d(TAG, "getPhoto response?.body()?.local_id: ${response.body()?.local_id} updated!")
                             Snackbar.make(picturesView, "${photo.local_filename} updated.", Snackbar.LENGTH_SHORT).show()
                         } else {
                             Log.d(TAG, "getPhoto photo.local_id: ${photo.local_id} not on server...")
 
                             // Upload the photo.
                             LocalPhotosFragment().upload(photo, context)
+
+                            images = images!!.filter { it.local_path != photo.local_path }
+                            notifyDataSetChanged()
                         }
                     }
 
