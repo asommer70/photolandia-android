@@ -124,14 +124,6 @@ class PhotolandiaDataSource(context: Context) {
                 "local_path",
                 "local_id"
         )
-//        return wDb.query(TABELANOME,
-// arrayOf<String>(IDTIT, TAREFATIT, SUMARIOTIT),
-// CONCLUIDOTIT + "=1",
-// null,
-// null,
-// null,
-// null,
-// String.valueOf(limite))
 
         val cursor = db.query(
                 "photos",

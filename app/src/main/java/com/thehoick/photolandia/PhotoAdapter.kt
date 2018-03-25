@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
@@ -13,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.thehoick.photolandia.database.PhotolandiaDataSource
 import com.thehoick.photolandia.models.Photo
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,6 +25,7 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
     val TAG = PhotoAdapter::class.java.simpleName
     var images: List<Photo>? = null
     var selectedPhotos = mutableListOf<Photo>()
+    val api = Api(this.context)
 
     init {
         images = photos
@@ -86,7 +89,6 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
 
                 Log.d(TAG, "idsString: ${idsString}")
 
-                val api = Api(this.context)
                 val callback = object: Callback<AlbumResult> {
                     override fun onFailure(call: Call<AlbumResult>?, t: Throwable?) {
                         Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
@@ -113,6 +115,44 @@ class PhotoAdapter(private val context: Activity, val photos: List<Photo>?, val 
 
                 }
                 api.getAlbums(callback)
+            }
+        } else {
+            // Try to upload a single photo.
+            picturesView.setOnLongClickListener {
+                val photo = images!![position]
+
+                val callback = object: Callback<Photo> {
+                    override fun onFailure(call: Call<Photo>?, t: Throwable?) {
+                        Log.d(TAG, "A problem occurred inside callback for getAlbums()...")
+                        Toast.makeText(context, "A problem occurred inside callback for getAlbums()...", Toast.LENGTH_LONG).show()
+                    }
+
+                    override fun onResponse(call: Call<Photo>?, response: Response<Photo>?) {
+                        if (response?.body()?.local_id != null) {
+                            // Update the local database with Photo details.
+                            Log.d(TAG, "getPhoto response?.body()?.local_id: ${response?.body()?.local_id}")
+
+                            val serverPhoto = response.body()
+                            val dataSource = PhotolandiaDataSource(context)
+                            dataSource.updatePhoto(serverPhoto!!)
+
+                            images = images!!.filter { it.local_path != serverPhoto.local_path }
+                            notifyDataSetChanged()
+
+                            Log.d(TAG, "getPhoto response?.body()?.local_id: ${response?.body()?.local_id} updated!")
+                            Snackbar.make(picturesView, "${photo.local_filename} updated.", Snackbar.LENGTH_SHORT).show()
+                        } else {
+                            Log.d(TAG, "getPhoto photo.local_id: ${photo.local_id} not on server...")
+
+                            // Upload the photo.
+                            LocalPhotosFragment().upload(photo, context)
+                        }
+                    }
+
+                }
+                api.getPhoto(photo.local_id!!, callback)
+
+                true
             }
         }
 

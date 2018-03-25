@@ -2,6 +2,7 @@ package com.thehoick.photolandia
 
 import android.app.Activity
 import android.app.Fragment
+import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
@@ -93,6 +94,8 @@ class LocalPhotosFragment: Fragment() {
                 val dataSource = PhotolandiaDataSource(context)
                 val localPhotos = dataSource.getUnuploadedPhotos()
 
+                Log.d(TAG, "localPhotos.size: ${localPhotos.size}")
+
                 for (photo in localPhotos) {
                     upload(photo)
                 }
@@ -164,19 +167,26 @@ class LocalPhotosFragment: Fragment() {
         cursor.close()
         if (listOfAllImages.isNotEmpty()) {
             // Reasonable number of unuploaded photos to put in the list.
-            if (listOfAllImages.size > 20) {
-                return listOfAllImages.take(20).reversed()
-            } else {
-                return listOfAllImages.reversed()
-            }
+//            if (listOfAllImages.size > 20) {
+            return listOfAllImages.take(20).reversed()
+//            } else {
+//                return listOfAllImages.reversed()
+//            }
         } else {
             // Only get un-uploaded Photos.
             return dataSource.getUnuploadedPhotos()
         }
     }
 
-    fun upload(photo: Photo) {
-        val api = Api(context)
+    fun upload(photo: Photo, otherContext: Context? = null) {
+        var theContext: Context
+        if (otherContext != null) {
+            theContext = otherContext
+        } else {
+            theContext = context
+        }
+
+        val api = Api(theContext)
 
         try {
             val file = File(photo.local_path)
@@ -189,7 +199,7 @@ class LocalPhotosFragment: Fragment() {
 
             val callback = object: Callback<Photo> {
                 override fun onFailure(call: Call<Photo>?, t: Throwable?) {
-                    Log.d(TAG, "A problem occurred uploading image...")
+                    Log.d(TAG, "A problem occurred uploading image... photo.local_path: ${photo.local_path}")
                 }
 
                 override fun onResponse(call: Call<Photo>?, response: Response<Photo>?) {
@@ -197,11 +207,13 @@ class LocalPhotosFragment: Fragment() {
                     val uploadedPhoto = response?.body()
                     if (response?.body()?.filename != null) {
                         // Save server photo data into the database.
-                        val dataSource = PhotolandiaDataSource(context)
+                        val dataSource = PhotolandiaDataSource(theContext)
                         dataSource.updatePhoto(uploadedPhoto!!)
 
                         photosAdapter!!.images = photosAdapter!!.images!!.filter { it.local_path != uploadedPhoto.local_path }
                         photosAdapter!!.notifyDataSetChanged()
+
+                        Log.d(TAG, "uploadedPhoto.id: ${uploadedPhoto.id}")
 
                         message?.setText(getString(R.string.photos_uploaded_check_for_more))
                         message?.visibility = VISIBLE
@@ -216,12 +228,15 @@ class LocalPhotosFragment: Fragment() {
 
 //                        Snackbar.make(view, "Uploaded ${uploadedPhoto.local_filename}", Snackbar.LENGTH_SHORT).show()
                     } else {
+                        Log.d(TAG, "Failed to upload photo.local_filename: ${photo.local_filename}")
+                        Log.d(TAG, "failed photo.local_id: ${photo.local_id}")
+                        Log.d(TAG, "failed photo.local_path: ${photo.local_path}")
                         Snackbar.make(view, "Problem with ${photo.local_filename}", Snackbar.LENGTH_SHORT).show()
                     }
                 }
             }
 
-            val prefs = context.getSharedPreferences(context.packageName + "_preferences", 0)
+            val prefs = theContext.getSharedPreferences(theContext.packageName + "_preferences", 0)
             val albumId = prefs.getString("default_album_id", "")
 
             api.uploadImage(

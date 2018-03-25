@@ -21,6 +21,9 @@ interface PhotolandiaApi {
     @GET("/photos/api")
     fun getPhotos(): Call<PhotosResult>
 
+    @GET("/photos/api/{id}")
+    fun getPhoto(@Path("id") id: String): Call<Photo>
+
     @Multipart
     @POST("/photos/api")
     fun uploadImage(
@@ -104,6 +107,11 @@ class Api(val context: Context) {
 
     fun getPhotos(callback: Callback<PhotosResult>) {
         val call = service.getPhotos()
+        call.enqueue(callback)
+    }
+
+    fun getPhoto(id: String, callback: Callback<Photo>) {
+        val call = service.getPhoto(id)
         call.enqueue(callback)
     }
 
