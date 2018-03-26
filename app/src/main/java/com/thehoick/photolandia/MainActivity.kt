@@ -26,11 +26,6 @@ class MainActivity : AppCompatActivity() {
     private val USER_ID = "user_id"
     private val USERNAME = "username"
     private val TOKEN = "token"
-    var scrollPos: Int? = null
-        get() = field
-        set(value) {
-            field = value
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,11 +62,7 @@ class MainActivity : AppCompatActivity() {
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
                 } else {
-                    // TODO:as build the initial list of local Photos and save them to the database.
-
                     localPhotosFragment()
-//                    val photos = this.findViewById(R.id.photos) as GridView
-//                    photos.adapter = PhotoAdapter(this, null, null);
                 }
             }
         }
