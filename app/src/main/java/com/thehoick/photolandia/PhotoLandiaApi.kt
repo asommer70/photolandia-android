@@ -71,7 +71,7 @@ class Api(val context: Context) {
     init {
         val prefs = context.getSharedPreferences(context.getPackageName() + "_preferences", 0)
         token = prefs?.getString(TOKEN, "")
-        baseUrl = prefs?.getString("url", "")
+        baseUrl = prefs?.getString("url", "http://localhost")
 
         val httpClient = OkHttpClient.Builder()
 

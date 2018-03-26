@@ -80,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         R.id.login -> {
             // Open the LoginActivity.
             val intent = Intent(this, LoginActivity::class.java)
+            intent.putExtra("loginType", "photos");
             startActivityForResult(intent, 100)
             true
         }
